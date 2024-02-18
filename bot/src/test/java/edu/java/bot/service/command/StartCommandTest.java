@@ -38,7 +38,7 @@ public class StartCommandTest extends CommandTest {
     public void testHandleWhenUserAlreadyRegistered() {
         when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(new User(CHAT_ID, new HashSet<>())));
 
-        String expectedText = "Бот уже работает.\nЧтобы увидеть список команд, используйте /help";
+        String expectedText = "Бот уже запущен";
         SendMessage actual = startCommand.handle(mockUpdate);
 
         assertMessageTextEquals(expectedText, actual);

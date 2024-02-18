@@ -18,7 +18,7 @@ public class StartCommand implements Command {
 
     private static final String USER_REGISTERED = "Добро пожаловать!\n"
         + "Чтобы увидеть список команд, используйте /help";
-    private static final String USER_ALREADY_EXISTS = "Бот уже запущен\n";
+    private static final String USER_ALREADY_EXISTS = "Бот уже запущен";
 
     @Override
     public String command() {
