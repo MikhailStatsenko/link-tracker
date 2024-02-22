@@ -3,8 +3,8 @@ package edu.java.bot.service.parser;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StackOverflowHandler implements Handler {
-    private static final String HOST = "stackoverflow.com";
+public class GitHubParser implements Parser {
+    private static final String HOST = "github.com";
 
     @Override
     public String host() {

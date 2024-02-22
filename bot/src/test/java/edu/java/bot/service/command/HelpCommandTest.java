@@ -3,8 +3,7 @@ package edu.java.bot.service.command;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.when;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HelpCommandTest extends CommandTest {
 
@@ -12,10 +11,18 @@ public class HelpCommandTest extends CommandTest {
 
     @BeforeEach
     public void setup() {
+        super.setUp();
         helpCommand = new HelpCommand();
-        when(mockUpdate.message()).thenReturn(mockMessage);
-        when(mockMessage.chat()).thenReturn(mockChat);
-        when(mockChat.id()).thenReturn(CHAT_ID);
+    }
+
+    @Test
+    void testCommand() {
+        assertThat(helpCommand.command()).isEqualTo("/help");
+    }
+
+    @Test
+    void testDescription() {
+        assertThat(helpCommand.description()).isEqualTo("Доступные команды");
     }
 
     @Test
@@ -25,8 +32,8 @@ public class HelpCommandTest extends CommandTest {
             "Ботом можно управлять с помощью следующих команд:\n\n" +
             "/start - начать работу с ботом\n" +
             "/help - получить доступные команды бота\n" +
-            "/track - начать отслеживать ресурс\n" +
-            "/untrack - удалить ресурс из отслеживаемых\n" +
+            "/track <ссылка> - начать отслеживать ресурс\n" +
+            "/untrack <ссылка> - удалить ресурс из отслеживаемых\n" +
             "/list - получить список отслеживаемых ресурсов";
         SendMessage actual = helpCommand.handle(mockUpdate);
 

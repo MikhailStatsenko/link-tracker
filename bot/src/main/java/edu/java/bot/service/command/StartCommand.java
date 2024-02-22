@@ -12,13 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class StartCommand implements Command {
-    private final UserRepository userRepository;
     private static final String COMMAND = "/start";
     private static final String DESCRIPTION = "Начать работу с ботом";
 
     private static final String USER_REGISTERED = "Добро пожаловать!\n"
         + "Чтобы увидеть список команд, используйте /help";
     private static final String USER_ALREADY_EXISTS = "Бот уже запущен";
+
+    private final UserRepository userRepository;
 
     @Override
     public String command() {

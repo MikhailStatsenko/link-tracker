@@ -2,7 +2,7 @@ package edu.java.bot.service.parser;
 
 import java.net.URI;
 
-public interface Handler {
+public interface Parser {
     String host();
 
     default boolean supports(URI uri) {

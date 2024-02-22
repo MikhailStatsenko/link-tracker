@@ -3,10 +3,10 @@ package edu.java.bot.service.parser;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GitHubHandlerTest {
+class GitHubParserTest {
     @Test
     public void testHost() {
-        GitHubHandler gitHubHandler = new GitHubHandler();
-        assertThat(gitHubHandler.host()).isEqualTo("github.com");
+        GitHubParser gitHubParser = new GitHubParser();
+        assertThat(gitHubParser.host()).isEqualTo("github.com");
     }
 }

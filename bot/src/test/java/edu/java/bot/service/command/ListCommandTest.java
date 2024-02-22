@@ -18,10 +18,18 @@ public class ListCommandTest extends CommandTest{
 
     @BeforeEach
     public void setup() {
+        super.setUp();
         listCommand = new ListCommand(mockUserRepository);
-        when(mockUpdate.message()).thenReturn(mockMessage);
-        when(mockMessage.chat()).thenReturn(mockChat);
-        when(mockChat.id()).thenReturn(CHAT_ID);
+    }
+
+    @Test
+    void testCommand() {
+        assertThat(listCommand.command()).isEqualTo("/list");
+    }
+
+    @Test
+    void testDescription() {
+        assertThat(listCommand.description()).isEqualTo("Просмотреть список отслеживаемых ссылок");
     }
 
     @Test

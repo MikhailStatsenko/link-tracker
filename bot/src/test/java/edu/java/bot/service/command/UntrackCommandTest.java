@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class UntrackCommandTest extends CommandTest {
@@ -18,23 +19,33 @@ public class UntrackCommandTest extends CommandTest {
 
     @BeforeEach
     public void setup() {
+        super.setUp();
         untrackCommand = new UntrackCommand(mockUserRepository);
-        when(mockUpdate.message()).thenReturn(mockMessage);
-        when(mockMessage.chat()).thenReturn(mockChat);
-        when(mockChat.id()).thenReturn(CHAT_ID);
     }
 
     @Test
-    public void testHandleWithRequestForLinkEntry() {
-        String expectedText = "Введите ссылку, от которой вы хотите отписаться:";
-        SendMessage actual = untrackCommand.handle(mockUpdate);
+    void testCommand() {
+        assertThat(untrackCommand.command()).isEqualTo("/untrack");
+    }
 
-        assertMessageTextEquals(expectedText, actual);
+    @Test
+    void testDescription() {
+        assertThat(untrackCommand.description()).isEqualTo("Прекратить отслеживание ссылки");
+    }
+
+    @Test
+    public void testHandleWhenLinkNotSent() {
+        when(mockMessage.text()).thenReturn("/untrack");
+
+        String expectedText = "Введите ссылку от которой хотите отказаться сразу после команды"
+            + "\nНапример: /untrack https://github.com/user/example/";
+
+        assertMessageTextEquals(expectedText, untrackCommand.handle(mockUpdate));
     }
 
     @Test
     public void testHandleWhenNoSuchLink() {
-        when(mockMessage.text()).thenReturn("https://example.com");
+        when(mockMessage.text()).thenReturn("/untrack https://example.com");
         when(mockUserRepository.findByChatId(123L)).thenReturn(Optional.empty());
 
         String expectedText = "Пользователь не найден.\nПерезапустите бота с помощью /start";
@@ -45,7 +56,7 @@ public class UntrackCommandTest extends CommandTest {
 
     @Test
     public void testHandleWhenLinkRemovedSuccessfully() {
-        when(mockMessage.text()).thenReturn("https://example.com");
+        when(mockMessage.text()).thenReturn("/untrack https://example.com");
         HashSet<String> trackedLinks = new HashSet<>();
         trackedLinks.add("https://example.com");
         when(mockUser.getLinks()).thenReturn(trackedLinks);
@@ -59,7 +70,7 @@ public class UntrackCommandTest extends CommandTest {
 
     @Test
     public void testHandle_LinkNotTracked() {
-        when(mockMessage.text()).thenReturn("https://example.com");
+        when(mockMessage.text()).thenReturn("/untrack https://example.com");
         when(mockUser.getLinks()).thenReturn(new HashSet<>());
         when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
 

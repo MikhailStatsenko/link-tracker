@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -17,10 +18,18 @@ public class StartCommandTest extends CommandTest {
 
     @BeforeEach
     public void setup() {
+        super.setUp();
         startCommand = new StartCommand(mockUserRepository);
-        when(mockUpdate.message()).thenReturn(mockMessage);
-        when(mockMessage.chat()).thenReturn(mockChat);
-        when(mockChat.id()).thenReturn(CHAT_ID);
+    }
+
+    @Test
+    void testCommand() {
+        assertThat(startCommand.command()).isEqualTo("/start");
+    }
+
+    @Test
+    void testDescription() {
+        assertThat(startCommand.description()).isEqualTo("Начать работу с ботом");
     }
 
     @Test

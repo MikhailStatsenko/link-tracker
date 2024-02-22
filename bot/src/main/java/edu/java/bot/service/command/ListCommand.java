@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ListCommand implements Command {
-    private final UserRepository userRepository;
     private static final String COMMAND = "/list";
     private static final String DESCRIPTION = "Просмотреть список отслеживаемых ссылок";
 
@@ -20,6 +19,8 @@ public class ListCommand implements Command {
         + "Перезапустите бота с помощью /start";
     private static final String NO_LINKS_TRACKED = "Вы пока не отслеживаете никакие ссылки!\n"
         + "Чтобы добавить новую ссылку, используйте /track";
+
+    private final UserRepository userRepository;
 
     @Override
     public String command() {
