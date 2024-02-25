@@ -1,4 +1,4 @@
-package edu.java.scrapper;
+package edu.java.scrapper.scrapper;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

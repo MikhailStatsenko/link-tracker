@@ -1,0 +1,36 @@
+{
+    "items": [
+        {
+            "tags": [
+                "linux",
+                "shell"
+            ],
+            "owner": {
+                "account_id": 114954,
+                "reputation": 34270,
+                "user_id": 302064,
+                "user_type": "registered",
+                "accept_rate": 78,
+                "profile_image": "https://www.gravatar.com/avatar/20fb43a596a253c30c6862a2af9cd311?s=256&d=identicon&r=PG",
+                "display_name": "john",
+                "link": "https://stackoverflow.com/users/302064/john"
+            },
+            "is_answered": true,
+            "view_count": 4450524,
+            "protected_date": 1514101070,
+            "accepted_answer_id": 5905066,
+            "answer_count": 19,
+            "score": 2980,
+            "last_activity_date": 1703841386,
+            "creation_date": 1304636494,
+            "last_edit_date": 1470922332,
+            "question_id": 5905054,
+            "content_license": "CC BY-SA 3.0",
+            "link": "https://stackoverflow.com/questions/5905054/how-can-i-recursively-find-all-files-in-current-and-subfolders-based-on-wildcard",
+            "title": "How can I recursively find all files in current and subfolders based on wildcard matching?"
+        }
+    ],
+    "has_more": false,
+    "quota_max": 300,
+    "quota_remaining": 286
+}
