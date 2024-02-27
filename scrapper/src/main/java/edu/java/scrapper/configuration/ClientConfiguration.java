@@ -1,9 +1,7 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.GitHubClient;
-import edu.java.scrapper.client.GitHubClientImpl;
 import edu.java.scrapper.client.StackOverflowClient;
-import edu.java.scrapper.client.StackOverflowClientImpl;
 import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,12 +17,12 @@ public class ClientConfiguration {
 
     @Bean
     public GitHubClient gitHubWebClient() {
-        return new GitHubClientImpl(gitHub);
+        return new GitHubClient(gitHub);
     }
 
     @Bean
     public StackOverflowClient stackOverflowWebClient() {
-        return new StackOverflowClientImpl(stackOverflow);
+        return new StackOverflowClient(stackOverflow);
     }
 
     public String getGitHubBaseUrl() {

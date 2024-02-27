@@ -1,7 +1,7 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.scrapper.dto.QuestionResponse;
+import edu.java.scrapper.dto.RepositoryResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,21 +11,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class StackOverflowClientImplTest {
+class GitHubClientTest {
     private WireMockServer wireMockServer;
-    private StackOverflowClient stackOverflowClient;
+    private GitHubClient gitHubClient;
 
     @BeforeEach
     public void setUp() {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
-        stackOverflowClient = new StackOverflowClientImpl("http://localhost:" + wireMockServer.port());
+        gitHubClient = new GitHubClient("http://localhost:" + wireMockServer.port());
+        gitHubClient.init();
     }
 
     @AfterEach
@@ -35,40 +37,41 @@ class StackOverflowClientImplTest {
 
     @Test
     public void testFetchRepository() throws IOException {
-        long questionId = 5905054L;
-        File file = ResourceUtils.getFile("classpath:stackoverflow-response-success.json");
+        String repository = "link-tracker";
+        String username = "MikhailStatsenko";
+        File file = ResourceUtils.getFile("classpath:github-response-success.json");
         String expectedJson = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
         wireMockServer
-            .stubFor(get("/questions/%d?site=stackoverflow".formatted(questionId))
+            .stubFor(get("/repos/%s/%s".formatted(username, repository))
                 .willReturn(aResponse()
                     .withStatus(200)
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        QuestionResponse response = stackOverflowClient.fetchQuestion(questionId);
+        RepositoryResponse response = gitHubClient.fetchRepository(username, repository);
 
         assertThat(response).isNotNull();
-        assertThat(response.items()).isNotEmpty();
-        assertThat(response.items().getFirst().questionId()).isEqualTo(5905054);
+        assertThat(response.id()).isEqualTo(755042961L);
+        assertThat(response.name()).isEqualTo("link-tracker");
+        assertThat(response.fullName()).isEqualTo("MikhailStatsenko/link-tracker");
     }
 
     @Test
     public void testFetchRepositoryWithInvalidUrl() throws IOException {
-        long badQuestionId = Long.MAX_VALUE;
-
-        File file = ResourceUtils.getFile("classpath:stackoverflow-response-bad-parameter.json");
+        String repository = "invalid";
+        String username = "invalid";
+        File file = ResourceUtils.getFile("classpath:github-response-not-found.json");
         String expectedJson = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 
         wireMockServer
-            .stubFor(get("/questions/%d?site=stackoverflow".formatted(badQuestionId))
+            .stubFor(get("/repos/%s/%s".formatted(username, repository))
                 .willReturn(aResponse()
-                    .withStatus(400)
+                    .withStatus(404)
                     .withBody(expectedJson)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        assertThatThrownBy(() -> stackOverflowClient.fetchQuestion(badQuestionId))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessage("Stack Overflow API exception");
+        assertThatThrownBy(() -> gitHubClient.fetchRepository(username, repository))
+            .isInstanceOf(WebClientResponseException.class);
     }
 }

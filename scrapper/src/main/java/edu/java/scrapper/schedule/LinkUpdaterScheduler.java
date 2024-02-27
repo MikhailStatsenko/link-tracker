@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class LinkUpdaterScheduler {
-    @Scheduled(fixedDelayString = "#{@scheduler.interval()}")
+    @Scheduled(fixedDelayString = "#{@linksScheduler.interval()}")
     public void update() {
         log.info("Looking for updates");
         // some logic
