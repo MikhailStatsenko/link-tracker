@@ -2,34 +2,24 @@ package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.GitHubClient;
 import edu.java.scrapper.client.StackOverflowClient;
-import jakarta.validation.constraints.NotNull;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@Setter
-@ConfigurationProperties(prefix = "api.base-url", ignoreUnknownFields = false)
+@Configuration
 public class ClientConfiguration {
-    @NotNull
-    private String gitHub;
-    @NotNull
-    private String stackOverflow;
+    @Value("${api.base-url.github:${api.default-url.github}}")
+    private String gitHubBaseUrl;
+    @Value("${api.base-url.stackoverflow:${api.default-url.stackoverflow}}")
+    private String stackOverflowBaseUrl;
 
     @Bean
     public GitHubClient gitHubWebClient() {
-        return new GitHubClient(gitHub);
+        return new GitHubClient(gitHubBaseUrl);
     }
 
     @Bean
     public StackOverflowClient stackOverflowWebClient() {
-        return new StackOverflowClient(stackOverflow);
-    }
-
-    public String getGitHubBaseUrl() {
-        return gitHub;
-    }
-
-    public String getStackOverflowBaseUrl() {
-        return stackOverflow;
+        return new StackOverflowClient(stackOverflowBaseUrl);
     }
 }

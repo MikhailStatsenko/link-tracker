@@ -27,7 +27,6 @@ class GitHubClientTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         gitHubClient = new GitHubClient("http://localhost:" + wireMockServer.port());
-        gitHubClient.init();
     }
 
     @AfterEach

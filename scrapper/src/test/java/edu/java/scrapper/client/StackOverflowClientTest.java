@@ -27,7 +27,6 @@ class StackOverflowClientTest {
         wireMockServer = new WireMockServer();
         wireMockServer.start();
         stackOverflowClient = new StackOverflowClient("http://localhost:" + wireMockServer.port());
-        stackOverflowClient.init();
     }
 
     @AfterEach
