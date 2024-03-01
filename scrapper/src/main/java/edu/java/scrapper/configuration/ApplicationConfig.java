@@ -1,16 +1,20 @@
-package edu.java.configuration;
+package edu.java.scrapper.configuration;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
+@EnableScheduling
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ApplicationConfig(
     @NotNull
-    Scheduler scheduler
+    @Bean
+    LinksScheduler linksScheduler
 ) {
-    public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
+    public record LinksScheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 }

@@ -1,8 +1,16 @@
 app:
-  scheduler:
+  links-scheduler:
     enable: true
     interval: 10s
     force-check-delay: 10s
+
+api:
+  base-url:
+    github: https://api.github.com
+    stackoverflow: https://api.stackexchange.com/2.3
+  default-url:
+    github: https://api.github.com
+    stackoverflow: https://api.stackexchange.com/2.3
 
 spring:
   application:
