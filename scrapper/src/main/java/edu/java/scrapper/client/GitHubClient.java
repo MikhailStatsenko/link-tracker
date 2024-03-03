@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.dto.RepositoryResponse;
+import edu.java.scrapper.dto.external.RepositoryResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class GitHubClient {

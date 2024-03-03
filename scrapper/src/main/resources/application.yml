@@ -8,6 +8,7 @@ api:
   base-url:
     github: https://api.github.com
     stackoverflow: https://api.stackexchange.com/2.3
+    bot: http://localhost:8090
   default-url:
     github: https://api.github.com
     stackoverflow: https://api.stackexchange.com/2.3
@@ -21,3 +22,7 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui

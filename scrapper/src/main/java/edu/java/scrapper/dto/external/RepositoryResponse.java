@@ -1,4 +1,4 @@
-package edu.java.scrapper.dto;
+package edu.java.scrapper.dto.external;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
