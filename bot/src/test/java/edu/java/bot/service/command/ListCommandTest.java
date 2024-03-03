@@ -1,12 +1,12 @@
 package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.model.User;
+import edu.java.bot.dto.response.LinkResponse;
+import edu.java.bot.dto.response.ListLinksResponse;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +19,7 @@ public class ListCommandTest extends CommandTest{
     @BeforeEach
     public void setup() {
         super.setUp();
-        listCommand = new ListCommand(mockUserRepository);
+        listCommand = new ListCommand(scrapperClient);
     }
 
     @Test
@@ -33,19 +33,8 @@ public class ListCommandTest extends CommandTest{
     }
 
     @Test
-    public void testHandleUserNotFound() {
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.empty());
-
-        String  expectedText ="Пользователь не найден.\nПерезапустите бота с помощью /start";
-        SendMessage actual = listCommand.handle(mockUpdate);
-
-        assertMessageTextEquals(expectedText, actual);
-    }
-
-    @Test
     public void testHandleNoLinksTracked() {
-        Set<String> emptySet = Collections.emptySet();
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(new User(CHAT_ID, emptySet)));
+        when(scrapperClient.getLinks(CHAT_ID)).thenReturn(new ListLinksResponse(Collections.emptyList(), 0));
 
         String expectedText = "Вы пока не отслеживаете никакие ссылки!\nЧтобы добавить новую ссылку, используйте /track";
         SendMessage actual = listCommand.handle(mockUpdate);
@@ -55,8 +44,10 @@ public class ListCommandTest extends CommandTest{
 
     @Test
     public void testHandleWithTrackedLinks() {
-        Set<String> trackedLinks = new HashSet<>(List.of("TrackedLink1", "TrackedLink2"));
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(new User(CHAT_ID, trackedLinks)));
+        List<LinkResponse> trackedLinks = new ArrayList<>(List.of(
+            new LinkResponse(1L, URI.create("TrackedLink1")),
+            new LinkResponse(2L, URI.create("TrackedLink2"))));
+        when(scrapperClient.getLinks(CHAT_ID)).thenReturn(new ListLinksResponse(trackedLinks, 2));
 
         String expectedText = "Отслеживаемые ресурсы:\n- TrackedLink1\n- TrackedLink2\n";
         SendMessage actual = listCommand.handle(mockUpdate);

@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.repository.UserRepository;
+import edu.java.bot.client.ScrapperClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class CommandTest {
     @Mock
-    protected UserRepository mockUserRepository;
+    protected ScrapperClient scrapperClient;
 
     @Mock
     protected Update mockUpdate;

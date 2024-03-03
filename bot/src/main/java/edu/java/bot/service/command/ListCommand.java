@@ -2,9 +2,8 @@ package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.model.User;
-import edu.java.bot.repository.UserRepository;
-import java.util.Optional;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.dto.response.ListLinksResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +14,11 @@ public class ListCommand implements Command {
     private static final String DESCRIPTION = "Просмотреть список отслеживаемых ссылок";
 
     private static final String TRACKED_LINKS_HEADER =  "Отслеживаемые ресурсы:\n";
-    private static final String USER_NOT_FOUND = "Пользователь не найден.\n"
-        + "Перезапустите бота с помощью /start";
+    private static final String ERROR_MESSAGE = "Во время работы бота возникла ошибка";
     private static final String NO_LINKS_TRACKED = "Вы пока не отслеживаете никакие ссылки!\n"
         + "Чтобы добавить новую ссылку, используйте /track";
 
-    private final UserRepository userRepository;
+    private final ScrapperClient scrapperClient;
 
     @Override
     public String command() {
@@ -35,15 +33,18 @@ public class ListCommand implements Command {
     @Override
     public SendMessage handle(Update update) {
         long chatId = update.message().chat().id();
-        Optional<User> userOptional =  userRepository.findByChatId(chatId);
+        try {
+            ListLinksResponse response = scrapperClient.getLinks(chatId);
+            if (response.size() == 0) {
+                return new SendMessage(chatId, NO_LINKS_TRACKED);
+            }
 
-        if (userOptional.isEmpty()) {
-            return new SendMessage(chatId, USER_NOT_FOUND);
+            StringBuilder links = new StringBuilder();
+            response.links().forEach(x -> links.append("- ").append(x.url()).append("\n"));
+
+            return new SendMessage(chatId, TRACKED_LINKS_HEADER + links).disableWebPagePreview(true);
+        } catch (Exception e) {
+            return new SendMessage(chatId, ERROR_MESSAGE);
         }
-        StringBuilder links = new StringBuilder();
-        userOptional.get().getLinks().forEach(x -> links.append("- ").append(x).append("\n"));
-
-        return new SendMessage(chatId, links.isEmpty() ? NO_LINKS_TRACKED : TRACKED_LINKS_HEADER + links)
-            .disableWebPagePreview(true);
     }
 }
