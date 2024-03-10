@@ -3,9 +3,10 @@ package edu.java.bot.service.command;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.dto.request.RemoveLinkRequest;
 import edu.java.bot.dto.response.LinkResponse;
+import edu.java.bot.exception.ApiBadRequestException;
+import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.net.URI;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ public class UntrackCommandTest extends CommandTest {
         when(scrapperClient.deleteLink(
             CHAT_ID,
             new RemoveLinkRequest(URI.create("https://example.com")))
-        ).thenThrow(new RuntimeException());
+        ).thenThrow(new ApiBadRequestException(mockErrorResponse));
 
         String expectedText = "Такого ресурса нет среди отслеживаемых";
         SendMessage actual = untrackCommand.handle(mockUpdate);

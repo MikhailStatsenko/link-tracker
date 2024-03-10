@@ -14,18 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ScrapperControllerExceptionHandler {
-    private ApiErrorResponse getErrorResponse(Throwable exception, String description, HttpStatus status) {
-        return new ApiErrorResponse(
-            description,
-            status.toString(),
-            exception.getClass().getSimpleName(),
-            exception.getMessage(),
-            Arrays.stream(exception.getStackTrace())
-                .map(StackTraceElement::toString)
-                .collect(Collectors.toList())
-        );
-    }
-
     @ExceptionHandler(LinkNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleLinkNotFoundException(LinkNotFoundException e) {
         return new ResponseEntity<>(
@@ -51,7 +39,7 @@ public class ScrapperControllerExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExistsException(LinkAlreadyTrackedException e) {
+    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
         return new ResponseEntity<>(
             getErrorResponse(e, "Пользователь уже существует", HttpStatus.BAD_REQUEST),
             HttpStatus.BAD_REQUEST
@@ -63,6 +51,18 @@ public class ScrapperControllerExceptionHandler {
         return new ResponseEntity<>(
             getErrorResponse(e, e.getMessage(), HttpStatus.BAD_REQUEST),
             HttpStatus.BAD_REQUEST
+        );
+    }
+
+    private ApiErrorResponse getErrorResponse(Throwable exception, String description, HttpStatus status) {
+        return new ApiErrorResponse(
+            description,
+            status.toString(),
+            exception.getClass().getSimpleName(),
+            exception.getMessage(),
+            Arrays.stream(exception.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.toList())
         );
     }
 }

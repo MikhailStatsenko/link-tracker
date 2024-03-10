@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.dto.request.AddLinkRequest;
+import edu.java.bot.exception.ApiBadRequestException;
 import edu.java.bot.service.parser.Parser;
 import java.net.URI;
 import java.util.List;
@@ -63,7 +64,7 @@ public class TrackCommand implements Command {
                 try {
                     scrapperClient.addLink(chatId, new AddLinkRequest(uri));
                     return new SendMessage(chatId, LINK_ADDED_SUCCESSFULLY);
-                } catch (Exception e) {
+                } catch (ApiBadRequestException e) {
                     return new SendMessage(chatId, LINK_ALREADY_TRACKED);
                 }
             }

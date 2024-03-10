@@ -4,6 +4,8 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.dto.request.RemoveLinkRequest;
+import edu.java.bot.exception.ApiBadRequestException;
+import edu.java.bot.exception.ApiNotFoundException;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,7 @@ public class UntrackCommand implements Command {
         try {
             scrapperClient.deleteLink(chatId, new RemoveLinkRequest(URI.create(link)));
             return new SendMessage(chatId, LINK_SUCCESSFULLY_REMOVED);
-        } catch (Exception e) {
+        } catch (ApiNotFoundException | ApiBadRequestException e) {
             return new SendMessage(chatId, NO_SUCH_TRACKED_LINK);
         }
     }

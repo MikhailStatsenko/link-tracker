@@ -1,6 +1,7 @@
 package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.exception.ApiBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +39,7 @@ public class StartCommandTest extends CommandTest {
 
     @Test
     public void testHandleWhenUserAlreadyRegistered() {
-        when(scrapperClient.registerChat(CHAT_ID)).thenThrow(RuntimeException.class);
+        when(scrapperClient.registerChat(CHAT_ID)).thenThrow(ApiBadRequestException.class);
 
         String expectedText = "Бот уже запущен";
         SendMessage actual = startCommand.handle(mockUpdate);

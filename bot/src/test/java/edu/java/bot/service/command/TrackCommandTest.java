@@ -2,6 +2,7 @@ package edu.java.bot.service.command;
 
 import edu.java.bot.dto.request.AddLinkRequest;
 import edu.java.bot.dto.response.LinkResponse;
+import edu.java.bot.exception.ApiBadRequestException;
 import edu.java.bot.service.parser.Parser;
 import java.net.URI;
 import java.util.List;
@@ -64,7 +65,7 @@ public class TrackCommandTest extends CommandTest {
         when(scrapperClient.addLink(
             CHAT_ID,
             new AddLinkRequest(URI.create("http://example.com")))
-        ).thenThrow(new RuntimeException());
+        ).thenThrow(new ApiBadRequestException(mockErrorResponse));
         when(mockParser.supports(any())).thenReturn(true);
 
         assertMessageTextEquals("Данный ресурс уже отслеживается", trackCommand.handle(mockUpdate));

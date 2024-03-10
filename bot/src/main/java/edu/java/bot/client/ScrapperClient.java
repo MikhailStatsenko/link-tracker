@@ -2,9 +2,13 @@ package edu.java.bot.client;
 
 import edu.java.bot.dto.request.AddLinkRequest;
 import edu.java.bot.dto.request.RemoveLinkRequest;
+import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.dto.response.LinkResponse;
 import edu.java.bot.dto.response.ListLinksResponse;
+import edu.java.bot.exception.ApiBadRequestException;
+import edu.java.bot.exception.ApiNotFoundException;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,6 +26,10 @@ public class ScrapperClient {
         return webClient
             .post().uri(TG_CHAT_ENDPOINT + "/" + chatId)
             .retrieve()
+            .onStatus(
+                HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
+            )
             .bodyToMono(Void.class)
             .block();
     }
@@ -30,6 +38,14 @@ public class ScrapperClient {
         return webClient.delete()
             .uri(TG_CHAT_ENDPOINT + "/" + chatId)
             .retrieve()
+            .onStatus(
+                HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
+            )
+            .onStatus(
+                HttpStatus.NOT_FOUND::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiNotFoundException::new)
+            )
             .bodyToMono(Void.class)
             .block();
     }
@@ -39,6 +55,10 @@ public class ScrapperClient {
             .uri(LINKS_ENDPOINT)
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .retrieve()
+            .onStatus(
+                HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
+            )
             .bodyToMono(ListLinksResponse.class)
             .block();
     }
@@ -49,6 +69,10 @@ public class ScrapperClient {
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .body(BodyInserters.fromValue(request))
             .retrieve()
+            .onStatus(
+                HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
+            )
             .bodyToMono(LinkResponse.class)
             .block();
     }
@@ -59,6 +83,14 @@ public class ScrapperClient {
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .body(BodyInserters.fromValue(request))
             .retrieve()
+            .onStatus(
+                HttpStatus.BAD_REQUEST::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
+            )
+            .onStatus(
+                HttpStatus.NOT_FOUND::equals,
+                response -> response.bodyToMono(ApiErrorResponse.class).map(ApiNotFoundException::new)
+            )
             .bodyToMono(LinkResponse.class)
             .block();
     }

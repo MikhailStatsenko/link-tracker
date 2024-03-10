@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.dto.response.ApiErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,9 @@ class CommandTest {
 
     @Mock
     protected Chat mockChat;
+
+    @Mock
+    protected ApiErrorResponse mockErrorResponse;
 
     protected static final long CHAT_ID = 123L;
 
