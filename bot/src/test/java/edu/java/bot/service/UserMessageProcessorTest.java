@@ -44,7 +44,7 @@ public class UserMessageProcessorTest {
         List<Command> commands = new ArrayList<>();
         commands.add(mockCommand1);
         commands.add(mockCommand2);
-        userMessageProcessor = new UserMessageProcessorImpl(commands);
+        userMessageProcessor = new UserMessageProcessor(commands);
 
         when(mockUpdate.message()).thenReturn(mockMessage);
         when(mockMessage.chat()).thenReturn(mockChat);

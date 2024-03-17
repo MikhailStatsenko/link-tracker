@@ -1,7 +1,7 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import edu.java.scrapper.dto.QuestionResponse;
+import edu.java.scrapper.dto.external.QuestionResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +24,7 @@ class StackOverflowClientTest {
 
     @BeforeEach
     public void setUp() {
-        wireMockServer = new WireMockServer();
+        wireMockServer = new WireMockServer(8888);
         wireMockServer.start();
         stackOverflowClient = new StackOverflowClient("http://localhost:" + wireMockServer.port());
     }

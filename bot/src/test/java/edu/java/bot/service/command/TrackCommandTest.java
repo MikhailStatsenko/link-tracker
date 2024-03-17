@@ -1,11 +1,11 @@
 package edu.java.bot.service.command;
 
-import edu.java.bot.model.User;
+import edu.java.bot.dto.request.AddLinkRequest;
+import edu.java.bot.dto.response.LinkResponse;
+import edu.java.bot.exception.ApiBadRequestException;
 import edu.java.bot.service.parser.Parser;
-import java.util.HashSet;
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,11 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class TrackCommandTest extends CommandTest {
-
     private TrackCommand trackCommand;
-
-    @Mock
-    private User mockUser;
 
     @Mock
     private Parser mockParser;
@@ -26,8 +22,7 @@ public class TrackCommandTest extends CommandTest {
     @BeforeEach
     public void setup() {
         super.setUp();
-        when(mockUser.getChatId()).thenReturn(CHAT_ID);
-        trackCommand = new TrackCommand(mockUserRepository, List.of(mockParser));
+        trackCommand = new TrackCommand(scrapperClient, List.of(mockParser));
     }
 
     @Test
@@ -53,7 +48,6 @@ public class TrackCommandTest extends CommandTest {
     @Test
     public void testHandleWithInvalidLink() {
         when(mockMessage.text()).thenReturn("/track github");
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
 
         assertMessageTextEquals("Неверный формат ссылки", trackCommand.handle(mockUpdate));
     }
@@ -61,20 +55,17 @@ public class TrackCommandTest extends CommandTest {
     @Test
     public void testHandleWithUnsupportedResource() {
         when(mockMessage.text()).thenReturn("/track http://example.com");
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
-        when(mockParser.supports(any())).thenReturn(false);
 
         assertMessageTextEquals("Данный ресурс не поддерживается!", trackCommand.handle(mockUpdate));
     }
 
     @Test
     public void testHandleWhenLinkAlreadyTracked() {
-        Set<String> trackedLinks = new HashSet<>();
-        trackedLinks.add("http://example.com");
-
         when(mockMessage.text()).thenReturn("/tack http://example.com");
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
-        when(mockUser.getLinks()).thenReturn(trackedLinks);
+        when(scrapperClient.addLink(
+            CHAT_ID,
+            new AddLinkRequest(URI.create("http://example.com")))
+        ).thenThrow(new ApiBadRequestException(mockErrorResponse));
         when(mockParser.supports(any())).thenReturn(true);
 
         assertMessageTextEquals("Данный ресурс уже отслеживается", trackCommand.handle(mockUpdate));
@@ -82,15 +73,12 @@ public class TrackCommandTest extends CommandTest {
 
     @Test
     public void testHandleWhenLinkAddedSuccessfully() {
-        Set<String> trackedLinks = new HashSet<>();
-
+        URI url = URI.create("http://example.com");
         when(mockMessage.text()).thenReturn("/track http://example.com");
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
-        when(mockUser.getLinks()).thenReturn(trackedLinks);
         when(mockParser.supports(any())).thenReturn(true);
+        when(scrapperClient.addLink(CHAT_ID, new AddLinkRequest(url))).thenReturn(new LinkResponse(1L, url));
 
         assertMessageTextEquals("Ссылка добавлена!", trackCommand.handle(mockUpdate));
-        assertThat(trackedLinks).contains("http://example.com");
     }
 }
 

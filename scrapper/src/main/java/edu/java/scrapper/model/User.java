@@ -1,6 +1,6 @@
-package edu.java.bot.model;
+package edu.java.scrapper.model;
 
-import java.util.Set;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,5 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class User {
     private Long chatId;
-    private Set<String> links;
+    private List<Link> trackedLinks;
 }

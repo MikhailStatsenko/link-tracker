@@ -2,9 +2,11 @@ package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.model.User;
-import edu.java.bot.repository.UserRepository;
-import java.util.Optional;
+import edu.java.bot.client.ScrapperClient;
+import edu.java.bot.dto.request.RemoveLinkRequest;
+import edu.java.bot.exception.ApiBadRequestException;
+import edu.java.bot.exception.ApiNotFoundException;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,10 @@ public class UntrackCommand implements Command {
 
     private static final String LINK_NOT_SENT = "Введите ссылку от которой хотите отказаться сразу после команды"
         + "\nНапример: /untrack https://github.com/user/example/";
-    private static final String USER_NOT_FOUND = "Пользователь не найден.\n"
-        + "Перезапустите бота с помощью /start";
     private static final String LINK_SUCCESSFULLY_REMOVED = "Ссылка удалена из отслеживаемых";
     private static final String NO_SUCH_TRACKED_LINK = "Такого ресурса нет среди отслеживаемых";
 
-    private final UserRepository userRepository;
+    private final ScrapperClient scrapperClient;
 
     @Override
     public String command() {
@@ -43,13 +43,12 @@ public class UntrackCommand implements Command {
         }
 
         String link = messageTextParts[1];
-        Optional<User> userOptional = userRepository.findByChatId(chatId);
 
-        if (userOptional.isEmpty()) {
-            return new SendMessage(chatId, USER_NOT_FOUND);
+        try {
+            scrapperClient.deleteLink(chatId, new RemoveLinkRequest(URI.create(link)));
+            return new SendMessage(chatId, LINK_SUCCESSFULLY_REMOVED);
+        } catch (ApiNotFoundException | ApiBadRequestException e) {
+            return new SendMessage(chatId, NO_SUCH_TRACKED_LINK);
         }
-
-        boolean isLinkTraced = userOptional.get().getLinks().remove(link);
-        return new SendMessage(chatId, isLinkTraced ? LINK_SUCCESSFULLY_REMOVED : NO_SUCH_TRACKED_LINK);
     }
 }

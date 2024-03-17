@@ -1,12 +1,12 @@
 package edu.java.bot.service.command;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.model.User;
-import java.util.HashSet;
-import java.util.Optional;
+import edu.java.bot.dto.request.RemoveLinkRequest;
+import edu.java.bot.dto.response.LinkResponse;
+import edu.java.bot.exception.ApiBadRequestException;
+import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -14,13 +14,10 @@ public class UntrackCommandTest extends CommandTest {
 
     private UntrackCommand untrackCommand;
 
-    @Mock
-    private User mockUser;
-
     @BeforeEach
     public void setup() {
         super.setUp();
-        untrackCommand = new UntrackCommand(mockUserRepository);
+        untrackCommand = new UntrackCommand(scrapperClient);
     }
 
     @Test
@@ -44,11 +41,14 @@ public class UntrackCommandTest extends CommandTest {
     }
 
     @Test
-    public void testHandleWhenNoSuchLink() {
+    public void testHandleWhenLinkNotTracked() {
         when(mockMessage.text()).thenReturn("/untrack https://example.com");
-        when(mockUserRepository.findByChatId(123L)).thenReturn(Optional.empty());
+        when(scrapperClient.deleteLink(
+            CHAT_ID,
+            new RemoveLinkRequest(URI.create("https://example.com")))
+        ).thenThrow(new ApiBadRequestException(mockErrorResponse));
 
-        String expectedText = "Пользователь не найден.\nПерезапустите бота с помощью /start";
+        String expectedText = "Такого ресурса нет среди отслеживаемых";
         SendMessage actual = untrackCommand.handle(mockUpdate);
 
         assertMessageTextEquals(expectedText, actual);
@@ -57,24 +57,14 @@ public class UntrackCommandTest extends CommandTest {
     @Test
     public void testHandleWhenLinkRemovedSuccessfully() {
         when(mockMessage.text()).thenReturn("/untrack https://example.com");
-        HashSet<String> trackedLinks = new HashSet<>();
-        trackedLinks.add("https://example.com");
-        when(mockUser.getLinks()).thenReturn(trackedLinks);
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
+        when(scrapperClient.deleteLink(
+            CHAT_ID,
+            new RemoveLinkRequest(URI.create("https://example.com")))
+        ).thenReturn(new LinkResponse(
+            1L, URI.create("https://example.com")))
+        ;
 
         String expectedText = "Ссылка удалена из отслеживаемых";
-        SendMessage actual = untrackCommand.handle(mockUpdate);
-
-        assertMessageTextEquals(expectedText, actual);
-    }
-
-    @Test
-    public void testHandle_LinkNotTracked() {
-        when(mockMessage.text()).thenReturn("/untrack https://example.com");
-        when(mockUser.getLinks()).thenReturn(new HashSet<>());
-        when(mockUserRepository.findByChatId(CHAT_ID)).thenReturn(Optional.of(mockUser));
-
-        String expectedText = "Такого ресурса нет среди отслеживаемых";
         SendMessage actual = untrackCommand.handle(mockUpdate);
 
         assertMessageTextEquals(expectedText, actual);
