@@ -1,4 +1,4 @@
-package edu.java.scrapper.scrapper;
+package edu.java.scrapper;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -13,7 +13,9 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -27,12 +29,22 @@ public abstract class IntegrationTest {
     @ServiceConnection
     public static PostgreSQLContainer<?> POSTGRES;
 
+    protected static JdbcTemplate jdbcTemplate;
+
     static {
         POSTGRES = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("scrapper")
             .withUsername("postgres")
             .withPassword("postgres");
         POSTGRES.start();
+
+        jdbcTemplate = new JdbcTemplate(
+            DataSourceBuilder.create()
+                .url(POSTGRES.getJdbcUrl())
+                .username(POSTGRES.getUsername())
+                .password(POSTGRES.getPassword())
+                .build()
+        );
 
         runMigrations(POSTGRES);
     }

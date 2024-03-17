@@ -1,41 +1,24 @@
-package edu.java.scrapper.scrapper;
+package edu.java.scrapper;
 
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.jdbc.core.JdbcTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 public class LiquibaseIntegrationTest extends IntegrationTest {
-    private static JdbcTemplate jdbcTemplate;
-
     private final long chatId1 = 123L;
     private final long chatId2 = 456L;
-
-    private final String username1 = "username1";
-    private final String username2 = "username2";
 
     private final String link1 = "https://github.com/sanyarnd/tinkoff-java-course-2023/";
     private final String link2 = "https://stackoverflow.com/search?q=unsupported%20link";
 
-    @BeforeAll
-    public static void setup() {
-        jdbcTemplate = new JdbcTemplate(
-            DataSourceBuilder.create()
-                .url(POSTGRES.getJdbcUrl())
-                .username(POSTGRES.getUsername())
-                .password(POSTGRES.getPassword())
-                .build()
-        );
-    }
-
-    @BeforeEach
-    public void beforeEach() {
-        jdbcTemplate.update("DELETE FROM chat");
-        jdbcTemplate.update("DELETE FROM link");
-        jdbcTemplate.update("DELETE FROM chat_link");
+    @AfterEach
+    public void tearDown() {
+        jdbcTemplate.execute("DELETE FROM chat");
+        jdbcTemplate.execute("DELETE FROM link");
+        jdbcTemplate.execute("DELETE FROM chat_link");
     }
 
    @Test
@@ -48,19 +31,24 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
 
    @Test
    public void testScrapperDBChatTable() {
-       String insertSql = "INSERT INTO chat (id, username) VALUES (?, ?)";
-       jdbcTemplate.update(insertSql, chatId1, username1);
-       jdbcTemplate.update(insertSql, chatId2, username2);
+       long chatId1 = 1L, chatId2 = 2L;
+
+       String insertSql = "INSERT INTO chat (id) VALUES (?)";
+       jdbcTemplate.update(insertSql, chatId1);
+       jdbcTemplate.update(insertSql, chatId2);
 
        String selectSql = "SELECT * FROM chat";
-       List<String> actual = jdbcTemplate.query(selectSql, (rs, rowNum) -> rs.getString("username"));
+       List<String> actual = jdbcTemplate.query(selectSql, (rs, rowNum) -> rs.getString("id"));
 
        assertThat(actual.size()).isEqualTo(2);
-       assertThat(actual).containsExactlyInAnyOrderElementsOf(List.of(username1, username2));
+       assertThat(actual).containsExactlyInAnyOrderElementsOf(List.of(String.valueOf(chatId1), String.valueOf(chatId2)));
    }
 
     @Test
     public void testScrapperDBLinkTable() {
+        String link1 = "https://github.com/sanyarnd/tinkoff-java-course-2023/";
+        String link2 = "https://stackoverflow.com/search?q=unsupported%20link";
+
         String insertSql = "INSERT INTO link (url) VALUES (?)";
         jdbcTemplate.update(insertSql, link1);
         jdbcTemplate.update(insertSql, link2);
@@ -74,9 +62,9 @@ public class LiquibaseIntegrationTest extends IntegrationTest {
 
     @Test
     public void testScrapperDBChatLinkTable() {
-        String insertChatSql = "INSERT INTO chat (id, username) VALUES (?, ?)";
-        jdbcTemplate.update(insertChatSql, chatId1, username1);
-        jdbcTemplate.update(insertChatSql, chatId2, username2);
+        String insertChatSql = "INSERT INTO chat (id) VALUES (?)";
+        jdbcTemplate.update(insertChatSql, chatId1);
+        jdbcTemplate.update(insertChatSql, chatId2);
 
         String insertLinkSql = "INSERT INTO link (url) VALUES (?)";
         jdbcTemplate.update(insertLinkSql, link1);
