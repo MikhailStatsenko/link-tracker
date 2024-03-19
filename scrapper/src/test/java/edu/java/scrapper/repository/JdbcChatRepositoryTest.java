@@ -7,34 +7,24 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@Transactional
+@SpringBootTest
 public class JdbcChatRepositoryTest extends IntegrationTest {
-    private static JdbcChatRepository jdbcChatRepository;
+    @Autowired
+    private JdbcChatRepository jdbcChatRepository;
 
-    private static Chat chat1;
-    private static Chat chat2;
-    private static Chat chat3;
+    @Autowired
+    private JdbcLinkRepository jdbcLinkRepository;
 
-    @BeforeAll
-    static void setUp() {
-        jdbcChatRepository = new JdbcChatRepository(jdbcTemplate);
-
-        chat1 = new Chat(1L, new ArrayList<>());
-        chat2 = new Chat(2L, new ArrayList<>());
-        chat3 = new Chat(3L, new ArrayList<>());
-    }
-
-    @AfterEach
-    public void tearDown() {
-        jdbcTemplate.execute("DELETE FROM chat");
-        jdbcTemplate.execute("DELETE FROM link");
-        jdbcTemplate.execute("DELETE FROM chat_link");
-    }
+    private static final Chat chat1 = new Chat(1L, new ArrayList<>());
+    private static final Chat chat2 = new Chat(2L, new ArrayList<>());
+    private static final Chat chat3 = new Chat(3L, new ArrayList<>());
 
     @Test
     public void testFindAll() {
@@ -55,13 +45,13 @@ public class JdbcChatRepositoryTest extends IntegrationTest {
 
     @Test
     public void testFindChatIdsByLinkId() {
-        JdbcLinkRepository linkRepository = new JdbcLinkRepository(jdbcTemplate);
         var link = new Link(URI.create("https://github.com/user/example"));
 
         jdbcChatRepository.save(chat1);
-        linkRepository.save(chat1.getId(), link);
+        jdbcLinkRepository.save(chat1.getId(), link);
 
-        Optional<Link> foundLink = linkRepository.findByUrl(link.getUrl().toString());
+        Optional<Link> foundLink = jdbcLinkRepository.findByUrl(link.getUrl().toString());
+        System.out.println(jdbcChatRepository.findAll());
         List<Long> chatIds = jdbcChatRepository.findAllChatIdsByLinkId(foundLink.get().getId());
 
         assertThat(chatIds).containsOnly(chat1.getId());

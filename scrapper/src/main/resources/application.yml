@@ -22,6 +22,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/scrapper
     username: ${POSTGRESQL_USERNAME}
     password: ${POSTGRESQL_PASSWORD}
+  liquibase:
+    enabled: false
 
 server:
   port: 8080

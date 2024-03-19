@@ -1,25 +1,24 @@
 package edu.java.scrapper;
 
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
-public class LiquibaseIntegrationTest extends IntegrationTest {
+@Transactional
+@SpringBootTest
+public class MigrationsIntegrationTest extends IntegrationTest {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private final long chatId1 = 123L;
     private final long chatId2 = 456L;
 
     private final String link1 = "https://github.com/sanyarnd/tinkoff-java-course-2023/";
     private final String link2 = "https://stackoverflow.com/search?q=unsupported%20link";
-
-    @AfterEach
-    public void tearDown() {
-        jdbcTemplate.execute("DELETE FROM chat");
-        jdbcTemplate.execute("DELETE FROM link");
-        jdbcTemplate.execute("DELETE FROM chat_link");
-    }
 
    @Test
     public void testConnectionProperties() {

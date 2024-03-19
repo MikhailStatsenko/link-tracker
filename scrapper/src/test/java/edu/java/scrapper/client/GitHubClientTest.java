@@ -18,6 +18,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+
 class GitHubClientTest {
     private WireMockServer wireMockServer;
     private GitHubClient gitHubClient;
