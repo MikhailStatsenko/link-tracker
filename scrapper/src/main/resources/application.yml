@@ -12,7 +12,7 @@ api:
   github:
     base-url: https://api.github.com
     default-url: https://api.github.com
-    token: ${ACCESS_TOKEN}
+    token: ${GITHUB_ACCESS_TOKEN}
     events-count: 10
   stackoverflow:
     base-url: https://api.stackexchange.com/2.3
