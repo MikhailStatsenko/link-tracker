@@ -5,15 +5,19 @@ app:
     force-check-delay: 10s
 
 api:
-  link-update:
-    interval-ms: 10000
-  base-url:
-    bot: http://localhost:8090
-    github: https://api.github.com
-    stackoverflow: https://api.stackexchange.com/2.3
-  default-url:
-    github: https://api.github.com
-    stackoverflow: https://api.stackexchange.com/2.3
+  bot:
+    base-url: http://localhost:8090
+    update:
+      interval-ms: 1000
+  github:
+    base-url: https://api.github.com
+    default-url: https://api.github.com
+    token: ${GITHUB_ACCESS_TOKEN}
+    events-count: 10
+  stackoverflow:
+    base-url: https://api.stackexchange.com/2.3
+    default-url: https://api.stackexchange.com/2.3
+
 
 spring:
   application:

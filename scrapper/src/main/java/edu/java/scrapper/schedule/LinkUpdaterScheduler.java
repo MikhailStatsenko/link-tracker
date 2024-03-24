@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LinkUpdaterScheduler {
-    @Value("${api.link-update.interval-ms}")
+    @Value("${api.bot.update.interval-ms}")
     private long interval;
 
     private final BotClient botClient;
