@@ -2,7 +2,7 @@ package edu.java.scrapper.service.jdbc;
 
 import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.model.Link;
-import edu.java.scrapper.repository.JdbcLinkRepository;
+import edu.java.scrapper.repository.jdbc.JdbcLinkRepository;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

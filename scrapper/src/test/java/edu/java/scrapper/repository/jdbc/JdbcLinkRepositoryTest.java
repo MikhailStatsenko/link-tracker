@@ -1,4 +1,4 @@
-package edu.java.scrapper.repository;
+package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.model.Chat;
@@ -24,12 +24,12 @@ class JdbcLinkRepositoryTest extends IntegrationTest {
     @Autowired
     private JdbcChatRepository jdbcChatRepository;
 
-    private static Chat chat1 = new Chat(1L, new ArrayList<>());
-    private static Chat chat2 = new Chat(2L, new ArrayList<>());
+    private static final Chat chat1 = new Chat(1L, new ArrayList<>());
+    private static final Chat chat2 = new Chat(2L, new ArrayList<>());
 
-    private static Link link1 = new Link(URI.create("https://github.com/user1/example"));
-    private static Link link2 = new Link(URI.create("https://github.com/user2/example"));
-    private static Link link3 = new Link(URI.create("https://stackoverflow.com/questions/123/what-is-question"));
+    private static final Link link1 = new Link(URI.create("https://github.com/user1/example"));
+    private static final Link link2 = new Link(URI.create("https://github.com/user2/example"));
+    private static final Link link3 = new Link(URI.create("https://stackoverflow.com/questions/123/what-is-question"));
 
     @BeforeEach
     public void beforeEach() {
@@ -80,7 +80,7 @@ class JdbcLinkRepositoryTest extends IntegrationTest {
     public void testFindByUrl() {
         jdbcLinkRepository.save(chat1.getId(), link1);
 
-        Optional<Link> foundLink = jdbcLinkRepository.findByChatIdAndUrl(chat1.getId(), link1.getUrl().toString());
+        Optional<Link> foundLink = jdbcLinkRepository.findByUrl(link1.getUrl().toString());
 
         assertThat(foundLink.isPresent()).isTrue();
         assertThat(foundLink.get().getUrl()).isEqualTo(link1.getUrl());
