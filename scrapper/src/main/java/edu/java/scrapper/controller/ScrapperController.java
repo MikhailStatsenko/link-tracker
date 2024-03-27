@@ -5,6 +5,7 @@ import edu.java.scrapper.dto.api.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.api.response.ApiErrorResponse;
 import edu.java.scrapper.dto.api.response.LinkResponse;
 import edu.java.scrapper.dto.api.response.ListLinksResponse;
+import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;

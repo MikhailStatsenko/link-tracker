@@ -11,6 +11,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import java.sql.SQLOutput;
 
 public class ScrapperClient {
     private static final String TG_CHAT_ENDPOINT = "/tg-chat";
@@ -55,6 +57,11 @@ public class ScrapperClient {
             .uri(LINKS_ENDPOINT)
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .retrieve()
+//            .onStatus(
+//                HttpStatus.BAD_REQUEST::equals,
+//                response -> response.bodyToMono(ApiErrorResponse.class)
+//                    .flatMap(error -> Mono.error(new ApiBadRequestException(error)))
+//            )
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
