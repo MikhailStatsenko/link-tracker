@@ -3,7 +3,7 @@ package edu.java.scrapper.service.jdbc;
 import edu.java.scrapper.exception.UserAlreadyExistsException;
 import edu.java.scrapper.exception.UserNotFoundException;
 import edu.java.scrapper.model.Chat;
-import edu.java.scrapper.repository.JdbcChatRepository;
+import edu.java.scrapper.repository.jdbc.JdbcChatRepository;
 import edu.java.scrapper.service.ChatService;
 import java.util.ArrayList;
 import java.util.List;

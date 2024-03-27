@@ -23,18 +23,17 @@ public class UpdateService {
 
     public List<LinkUpdateRequest> fetchAllUpdates(long interval) {
         List<Link> links = linkService.listAllOutdatedLinks(interval);
-
         List<Update> updates = new ArrayList<>();
         for (var link : links) {
             updateHandlers.stream()
                 .filter(handler -> handler.supports(link.getUrl()))
                 .findAny()
                 .orElseThrow(LinkNotSupportedException::new)
-                .fetchUpdate(link)
-                .ifPresent(upd -> {
+                .fetchUpdates(link)
+                .forEach(update -> update.ifPresent(upd -> {
                     updates.add(upd);
                     linkService.setLastCheckTime(link, OffsetDateTime.now());
-                });
+                }));
         }
         return updatesToLinkUpdateRequests(updates);
     }

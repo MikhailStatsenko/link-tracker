@@ -1,18 +1,19 @@
-package edu.java.scrapper.repository;
+package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.repository.LinkRepository;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Repository
 @RequiredArgsConstructor
-public class JdbcLinkRepository {
+public class JdbcLinkRepository implements LinkRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public List<Link> findAll() {

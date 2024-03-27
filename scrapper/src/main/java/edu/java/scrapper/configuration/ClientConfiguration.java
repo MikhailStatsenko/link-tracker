@@ -9,18 +9,24 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ClientConfiguration {
-    @Value("${api.base-url.github:${api.default-url.github}}")
+    @Value("${api.github.base-url:${api.github.default-url}}")
     private String gitHubBaseUrl;
 
-    @Value("${api.base-url.stackoverflow:${api.default-url.stackoverflow}}")
+    @Value("${api.stackoverflow.base-url:${api.stackoverflow.default-url}}")
     private String stackOverflowBaseUrl;
 
-    @Value("${api.base-url.bot")
+    @Value("${api.bot.base-url}")
     private String botBaseUrl;
+
+    @Value("${api.github.events-count}")
+    int githubEventsCount;
+
+    @Value("${api.github.token}")
+    String gitHubToken;
 
     @Bean
     public GitHubClient gitHubWebClient() {
-        return new GitHubClient(gitHubBaseUrl);
+        return new GitHubClient(gitHubBaseUrl, gitHubToken, githubEventsCount);
     }
 
     @Bean
