@@ -1,18 +1,14 @@
 package edu.java.bot.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.dto.request.LinkUpdate;
-import org.junit.jupiter.api.BeforeEach;
+import java.net.URI;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.net.URI;
-import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.model.Link;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class JdbcLinkServiceTest {
+class LinkServiceImplTest {
     @Mock
     private Link mockLink;
 
@@ -29,31 +29,31 @@ class JdbcLinkServiceTest {
     private JdbcLinkRepository linkRepository;
 
     @InjectMocks
-    private JdbcLinkService linkService;
+    private LinkServiceImpl linkService;
 
     private final long testChatId = 1L;
     private final URI testUrl = URI.create("http://github.com/user/repo");
 
     @Test
-    void testListAll() {
+    void testFindAll() {
         List<Link> expectedLinks = new ArrayList<>();
         expectedLinks.add(mockLink);
         when(linkRepository.findAllByChatId(testChatId)).thenReturn(expectedLinks);
 
-        List<Link> actualLinks = linkService.listAll(testChatId);
+        List<Link> actualLinks = linkService.findAll(testChatId);
 
         assertThat(actualLinks).isEqualTo(expectedLinks);
         verify(linkRepository).findAllByChatId(testChatId);
     }
 
     @Test
-    void testListAllOutdatedLinks() {
+    void testFindAllOutdatedLinks() {
         long interval = 100L;
         List<Link> expectedLinks = new ArrayList<>();
         expectedLinks.add(mockLink);
         when(linkRepository.findAllOutdatedLinks(interval)).thenReturn(expectedLinks);
 
-        List<Link> actualLinks = linkService.listAllOutdatedLinks(interval);
+        List<Link> actualLinks = linkService.findAllOutdatedLinks(interval);
 
         assertThat(actualLinks).isEqualTo(expectedLinks);
         verify(linkRepository).findAllOutdatedLinks(interval);

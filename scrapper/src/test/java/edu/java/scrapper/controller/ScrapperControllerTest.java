@@ -63,7 +63,7 @@ class ScrapperControllerTest {
     @Test
     void testGetLinks() {
         List<Link> mockLinks = List.of(mockLink);
-        when(linkService.listAll(testChatId)).thenReturn(mockLinks);
+        when(linkService.findAll(testChatId)).thenReturn(mockLinks);
 
         ResponseEntity<ListLinksResponse> responseEntity = scrapperController.getLinks(testChatId);
 

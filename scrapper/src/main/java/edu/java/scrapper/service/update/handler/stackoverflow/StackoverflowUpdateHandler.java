@@ -28,7 +28,7 @@ public class StackoverflowUpdateHandler implements UpdateHandler {
     @Override
     public List<Optional<Update>> fetchUpdates(Link link) {
         String url = link.getUrl().toString();
-        long questionId = Long.parseLong(url.split("/")[questionIndex]);
+        long questionId = Long.parseLong(url.split("/+")[questionIndex]);
         QuestionResponse response = stackOverflowClient.fetchQuestion(questionId);
 
         Optional<Update> update = Optional.empty();

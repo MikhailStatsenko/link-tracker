@@ -22,7 +22,7 @@ public class UpdateService {
     private final List<UpdateHandler> updateHandlers;
 
     public List<LinkUpdateRequest> fetchAllUpdates(long interval) {
-        List<Link> links = linkService.listAllOutdatedLinks(interval);
+        List<Link> links = linkService.findAllOutdatedLinks(interval);
         List<Update> updates = new ArrayList<>();
         for (var link : links) {
             updateHandlers.stream()
@@ -42,7 +42,7 @@ public class UpdateService {
         List<LinkUpdateRequest> linkUpdateRequests = new ArrayList<>();
 
         for (var update : updates) {
-            List<Long> chatIds = chatService.listAllChatIdsByLinkId(update.linkId());
+            List<Long> chatIds = chatService.findAllChatIdsByLinkId(update.linkId());
             linkUpdateRequests.add(new LinkUpdateRequest(
                 update.linkId(),
                 URI.create(update.url()),

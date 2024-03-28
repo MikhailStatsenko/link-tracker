@@ -5,7 +5,6 @@ import edu.java.scrapper.dto.api.request.RemoveLinkRequest;
 import edu.java.scrapper.dto.api.response.ApiErrorResponse;
 import edu.java.scrapper.dto.api.response.LinkResponse;
 import edu.java.scrapper.dto.api.response.ListLinksResponse;
-import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
@@ -71,7 +70,7 @@ public class ScrapperController {
     )
     @GetMapping("/links")
     ResponseEntity<ListLinksResponse> getLinks(@NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId) {
-        List<Link> links = linkService.listAll(tgChatId);
+        List<Link> links = linkService.findAll(tgChatId);
         List<LinkResponse> linksResponses = links.stream().map(
             link -> new LinkResponse(link.getId(), link.getUrl())
         ).toList();

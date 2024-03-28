@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.UserAlreadyExistsException;
 import edu.java.scrapper.exception.UserNotFoundException;
@@ -19,13 +19,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class JdbcChatServiceTest {
+public class ChatServiceImplTest {
 
     @Mock
     private JdbcChatRepository chatRepository;
 
     @InjectMocks
-    private JdbcChatService chatService;
+    private ChatServiceImpl chatService;
 
     private final Long userId = 123L;
     private final Long linkId = 456L;
@@ -65,11 +65,11 @@ public class JdbcChatServiceTest {
     }
 
     @Test
-    void testListAllChatIdsByLinkId_ReturnsListOfChatIds() {
+    void testListAllChatIdsByLinkId_ReturnsFindOfChatIds() {
         List<Long> expectedChatIds = List.of(1L, 2L, 3L);
         when(chatRepository.findAllChatIdsByLinkId(linkId)).thenReturn(expectedChatIds);
 
-        List<Long> actualChatIds = chatService.listAllChatIdsByLinkId(linkId);
+        List<Long> actualChatIds = chatService.findAllChatIdsByLinkId(linkId);
 
         assertThat(actualChatIds).isEqualTo(expectedChatIds);
     }

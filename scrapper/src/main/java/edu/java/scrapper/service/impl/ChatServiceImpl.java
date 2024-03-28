@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.UserAlreadyExistsException;
 import edu.java.scrapper.exception.UserNotFoundException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcChatService implements ChatService {
+public class ChatServiceImpl implements ChatService {
 
     private final JdbcChatRepository chatRepository;
 
@@ -34,7 +34,7 @@ public class JdbcChatService implements ChatService {
     }
 
     @Override
-    public List<Long> listAllChatIdsByLinkId(long linkId) {
+    public List<Long> findAllChatIdsByLinkId(long linkId) {
         return chatRepository.findAllChatIdsByLinkId(linkId);
     }
 }

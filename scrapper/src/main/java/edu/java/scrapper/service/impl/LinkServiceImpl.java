@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.model.Link;
@@ -13,16 +13,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class JdbcLinkService implements LinkService {
+public class LinkServiceImpl implements LinkService {
     private final JdbcLinkRepository linkRepository;
 
     @Override
-    public List<Link> listAll(long chatId) {
+    public List<Link> findAll(long chatId) {
         return linkRepository.findAllByChatId(chatId);
     }
 
     @Override
-    public List<Link> listAllOutdatedLinks(long interval) {
+    public List<Link> findAllOutdatedLinks(long interval) {
         return linkRepository.findAllOutdatedLinks(interval);
     }
 

@@ -8,7 +8,7 @@ api:
   bot:
     base-url: http://localhost:8090
     update:
-      interval-ms: 1000
+      interval-ms: 10
   github:
     base-url: https://api.github.com
     default-url: https://api.github.com

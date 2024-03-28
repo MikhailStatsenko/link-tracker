@@ -7,5 +7,5 @@ public interface ChatService {
 
     void unregister(Long id);
 
-    List<Long> listAllChatIdsByLinkId(long linkId);
+    List<Long> findAllChatIdsByLinkId(long linkId);
 }

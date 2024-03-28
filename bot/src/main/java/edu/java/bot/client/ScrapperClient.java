@@ -11,8 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import java.sql.SQLOutput;
 
 public class ScrapperClient {
     private static final String TG_CHAT_ENDPOINT = "/tg-chat";

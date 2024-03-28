@@ -6,9 +6,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface LinkService {
-    List<Link> listAll(long chatId);
+    List<Link> findAll(long chatId);
 
-    List<Link> listAllOutdatedLinks(long interval);
+    List<Link> findAllOutdatedLinks(long interval);
 
     Link add(Long chatId, URI url);
 

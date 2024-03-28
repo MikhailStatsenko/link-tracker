@@ -34,7 +34,7 @@ public class GitHubUpdateHandler implements UpdateHandler {
     @Override
     public List<Optional<Update>> fetchUpdates(Link link) {
         String url = link.getUrl().toString();
-        String[] urlParts = url.split("/");
+        String[] urlParts = url.split("/+");
 
         List<Optional<Update>> updates = new ArrayList<>();
         try {
@@ -59,8 +59,6 @@ public class GitHubUpdateHandler implements UpdateHandler {
 
     private List<EventResponse> fetchNewEvents(String username, String repository, OffsetDateTime lastUpdateTime) {
         List<EventResponse> events = gitHubClient.fetchEvents(username, repository);
-        log.info(events.toString());
-        log.info(events.stream().filter(e -> e.getCreatedAt().isAfter(lastUpdateTime)).toList().toString());
         return events.stream().filter(e -> e.getCreatedAt().isAfter(lastUpdateTime)).toList();
     }
 }

@@ -13,7 +13,7 @@ public class UpdateService {
     public void processUpdate(LinkUpdate update) {
         for (long chatId : update.tgChatIds()) {
             bot.execute(new SendMessage(chatId, "Произошли обновления на ресурсе: "
-                + update.url() + "\n"
+                + update.url() + "\n\n"
                 + update.description()));
         }
     }
