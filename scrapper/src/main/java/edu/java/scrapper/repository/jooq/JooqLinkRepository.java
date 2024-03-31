@@ -86,6 +86,7 @@ public class JooqLinkRepository implements LinkRepository {
 
         dslContext.insertInto(CHAT_LINK, CHAT_LINK.CHAT_ID, CHAT_LINK.LINK_ID)
             .values(chatId, savedLink.get().getId()).execute();
+
         return savedLink.get();
     }
 

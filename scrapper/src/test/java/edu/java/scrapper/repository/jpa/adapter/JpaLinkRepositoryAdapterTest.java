@@ -125,4 +125,15 @@ class JpaLinkRepositoryAdapterTest extends IntegrationTest {
         assertThat(foundLink).isEmpty();
     }
 
+    @Test
+    public void testSetLastCheckTime() {
+        Link link = jpaLinkRepositoryAdapter.save(chat1.getId(), link1);
+        OffsetDateTime newLastCheckTime = OffsetDateTime.now().minusDays(1);
+
+        jpaLinkRepositoryAdapter.setLastCheckTime(link, newLastCheckTime);
+        Optional<Link> updatedLinkOptional = jpaLinkRepositoryAdapter.findByUrl(link.getUrl().toString());
+
+        assertThat(updatedLinkOptional.isPresent()).isTrue();
+        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualTo(newLastCheckTime.toZonedDateTime());
+    }
 }

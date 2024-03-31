@@ -119,4 +119,16 @@ class JooqLinkRepositoryTest extends IntegrationTest {
 
         assertThat(foundLink).isEmpty();
     }
+
+    @Test
+    public void testSetLastCheckTime() {
+        Link link = jooqLinkRepository.save(chat1.getId(), link1);
+        OffsetDateTime newLastCheckTime = OffsetDateTime.now().minusDays(1);
+
+        jooqLinkRepository.setLastCheckTime(link, newLastCheckTime);
+        Optional<Link> updatedLinkOptional = jooqLinkRepository.findByUrl(link.getUrl().toString());
+
+        assertThat(updatedLinkOptional.isPresent()).isTrue();
+        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualTo(newLastCheckTime.toZonedDateTime());
+    }
 }

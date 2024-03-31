@@ -119,4 +119,16 @@ class JdbcLinkRepositoryTest extends IntegrationTest {
 
         assertThat(foundLink).isEmpty();
     }
+
+    @Test
+    public void testSetLastCheckTime() {
+        Link link = jdbcLinkRepository.save(chat1.getId(), link1);
+        OffsetDateTime newLastCheckTime = OffsetDateTime.now().minusDays(1);
+
+        jdbcLinkRepository.setLastCheckTime(link, newLastCheckTime);
+        Optional<Link> updatedLinkOptional = jdbcLinkRepository.findByUrl(link.getUrl().toString());
+
+        assertThat(updatedLinkOptional.isPresent()).isTrue();
+        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualTo(newLastCheckTime.toZonedDateTime());
+    }
 }
