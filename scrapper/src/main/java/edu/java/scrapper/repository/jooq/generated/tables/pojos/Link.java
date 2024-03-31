@@ -3,11 +3,15 @@
  */
 package edu.java.scrapper.repository.jooq.generated.tables.pojos;
 
+
 import jakarta.validation.constraints.Size;
+
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+
 import javax.annotation.processing.Generated;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +31,9 @@ public class Link implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
+    private Integer id;
     private String url;
-    private LocalDateTime lastCheckTime;
+    private OffsetDateTime lastCheckTime;
 
     public Link() {}
 
@@ -41,9 +45,9 @@ public class Link implements Serializable {
 
     @ConstructorProperties({ "id", "url", "lastCheckTime" })
     public Link(
-        @Nullable Long id,
+        @Nullable Integer id,
         @NotNull String url,
-        @Nullable LocalDateTime lastCheckTime
+        @Nullable OffsetDateTime lastCheckTime
     ) {
         this.id = id;
         this.url = url;
@@ -54,14 +58,14 @@ public class Link implements Serializable {
      * Getter for <code>LINK.ID</code>.
      */
     @Nullable
-    public Long getId() {
+    public Integer getId() {
         return this.id;
     }
 
     /**
      * Setter for <code>LINK.ID</code>.
      */
-    public void setId(@Nullable Long id) {
+    public void setId(@Nullable Integer id) {
         this.id = id;
     }
 
@@ -86,14 +90,14 @@ public class Link implements Serializable {
      * Getter for <code>LINK.LAST_CHECK_TIME</code>.
      */
     @Nullable
-    public LocalDateTime getLastCheckTime() {
+    public OffsetDateTime getLastCheckTime() {
         return this.lastCheckTime;
     }
 
     /**
      * Setter for <code>LINK.LAST_CHECK_TIME</code>.
      */
-    public void setLastCheckTime(@Nullable LocalDateTime lastCheckTime) {
+    public void setLastCheckTime(@Nullable OffsetDateTime lastCheckTime) {
         this.lastCheckTime = lastCheckTime;
     }
 

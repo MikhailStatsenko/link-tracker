@@ -3,9 +3,11 @@
  */
 package edu.java.scrapper.repository.jooq.generated;
 
+
 import edu.java.scrapper.repository.jooq.generated.tables.Chat;
 import edu.java.scrapper.repository.jooq.generated.tables.ChatLink;
 import edu.java.scrapper.repository.jooq.generated.tables.Link;
+
 import javax.annotation.processing.Generated;
 
 

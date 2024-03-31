@@ -3,13 +3,17 @@
  */
 package edu.java.scrapper.repository.jooq.generated.tables;
 
+
 import edu.java.scrapper.repository.jooq.generated.DefaultSchema;
 import edu.java.scrapper.repository.jooq.generated.Keys;
 import edu.java.scrapper.repository.jooq.generated.tables.records.ChatLinkRecord;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
 import javax.annotation.processing.Generated;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.Field;
@@ -67,7 +71,7 @@ public class ChatLink extends TableImpl<ChatLinkRecord> {
     /**
      * The column <code>CHAT_LINK.LINK_ID</code>.
      */
-    public final TableField<ChatLinkRecord, Long> LINK_ID = createField(DSL.name("LINK_ID"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ChatLinkRecord, Integer> LINK_ID = createField(DSL.name("LINK_ID"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private ChatLink(Name alias, Table<ChatLinkRecord> aliased) {
         this(alias, aliased, null);
@@ -194,14 +198,14 @@ public class ChatLink extends TableImpl<ChatLinkRecord> {
 
     @Override
     @NotNull
-    public Row2<Long, Long> fieldsRow() {
+    public Row2<Long, Integer> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function2<? super Long, ? super Long, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function2<? super Long, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -209,7 +213,7 @@ public class ChatLink extends TableImpl<ChatLinkRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function2<? super Long, ? super Long, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function2<? super Long, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

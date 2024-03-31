@@ -83,13 +83,13 @@ public class JooqLinkRepository implements LinkRepository {
         if (savedLink.isEmpty()) {
             LinkRecord linkRecord = dslContext
                 .insertInto(LINK, LINK.URL, LINK.LAST_CHECK_TIME)
-                .values(link.getUrl().toString(), link.getLastCheckTime().toLocalDateTime())
+                .values(link.getUrl().toString(), link.getLastCheckTime())
                 .returning().fetchOne();
             savedLink = Optional.of(linkRecord.into(Link.class));
         }
 
         dslContext.insertInto(CHAT_LINK, CHAT_LINK.CHAT_ID, CHAT_LINK.LINK_ID)
-            .values(chatId, savedLink.get().getId()).execute();
+            .values(chatId, savedLink.get().getId().intValue()).execute();
         return savedLink.get();
     }
 
@@ -97,16 +97,16 @@ public class JooqLinkRepository implements LinkRepository {
     public void delete(long chatId, long linkId) {
         dslContext.deleteFrom(CHAT_LINK)
             .where(CHAT_LINK.CHAT_ID.eq(chatId))
-            .and(CHAT_LINK.LINK_ID.eq(linkId))
+            .and(CHAT_LINK.LINK_ID.eq((int) linkId))
             .execute();
 
         List<Long> chatIdsWithThisLink = dslContext
             .select(CHAT_LINK.CHAT_ID).from(CHAT_LINK)
-            .where(CHAT_LINK.LINK_ID.eq(linkId))
+            .where(CHAT_LINK.LINK_ID.eq((int) linkId))
             .fetchInto(Long.class);
 
         if (chatIdsWithThisLink.isEmpty()) {
-            dslContext.deleteFrom(LINK).where(LINK.ID.eq(linkId)).execute();
+            dslContext.deleteFrom(LINK).where(LINK.ID.eq((int) linkId)).execute();
         }
     }
 
@@ -114,8 +114,8 @@ public class JooqLinkRepository implements LinkRepository {
     public void setLastCheckTime(Link link, OffsetDateTime lastCheckTime) {
         dslContext
             .update(LINK)
-            .set(LINK.LAST_CHECK_TIME, lastCheckTime.toLocalDateTime())
-            .where(LINK.ID.eq(link.getId()))
+            .set(LINK.LAST_CHECK_TIME, lastCheckTime)
+            .where(LINK.ID.eq(link.getId().intValue()))
             .execute();
     }
 }

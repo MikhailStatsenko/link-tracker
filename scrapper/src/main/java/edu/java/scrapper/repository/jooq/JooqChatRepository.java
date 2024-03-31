@@ -29,7 +29,7 @@ public class JooqChatRepository implements ChatRepository {
         return dslContext
             .select(CHAT_LINK.CHAT_ID)
             .from(CHAT_LINK)
-            .where(CHAT_LINK.LINK_ID.eq(linkId))
+            .where(CHAT_LINK.LINK_ID.eq((int) linkId))
             .fetchInto(Long.class);
     }
 

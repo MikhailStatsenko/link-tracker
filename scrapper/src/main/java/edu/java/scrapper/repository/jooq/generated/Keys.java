@@ -3,13 +3,16 @@
  */
 package edu.java.scrapper.repository.jooq.generated;
 
+
 import edu.java.scrapper.repository.jooq.generated.tables.Chat;
 import edu.java.scrapper.repository.jooq.generated.tables.ChatLink;
 import edu.java.scrapper.repository.jooq.generated.tables.Link;
 import edu.java.scrapper.repository.jooq.generated.tables.records.ChatLinkRecord;
 import edu.java.scrapper.repository.jooq.generated.tables.records.ChatRecord;
 import edu.java.scrapper.repository.jooq.generated.tables.records.LinkRecord;
+
 import javax.annotation.processing.Generated;
+
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;

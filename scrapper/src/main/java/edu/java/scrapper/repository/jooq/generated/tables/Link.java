@@ -3,14 +3,18 @@
  */
 package edu.java.scrapper.repository.jooq.generated.tables;
 
+
 import edu.java.scrapper.repository.jooq.generated.DefaultSchema;
 import edu.java.scrapper.repository.jooq.generated.Keys;
 import edu.java.scrapper.repository.jooq.generated.tables.records.LinkRecord;
-import java.time.LocalDateTime;
+
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
 import javax.annotation.processing.Generated;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.Field;
@@ -64,7 +68,7 @@ public class Link extends TableImpl<LinkRecord> {
     /**
      * The column <code>LINK.ID</code>.
      */
-    public final TableField<LinkRecord, Long> ID = createField(DSL.name("ID"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<LinkRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>LINK.URL</code>.
@@ -74,7 +78,7 @@ public class Link extends TableImpl<LinkRecord> {
     /**
      * The column <code>LINK.LAST_CHECK_TIME</code>.
      */
-    public final TableField<LinkRecord, LocalDateTime> LAST_CHECK_TIME = createField(DSL.name("LAST_CHECK_TIME"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<LinkRecord, OffsetDateTime> LAST_CHECK_TIME = createField(DSL.name("LAST_CHECK_TIME"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field(DSL.raw("CURRENT_TIMESTAMP"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     private Link(Name alias, Table<LinkRecord> aliased) {
         this(alias, aliased, null);
@@ -184,14 +188,14 @@ public class Link extends TableImpl<LinkRecord> {
 
     @Override
     @NotNull
-    public Row3<Integer, String, LocalDateTime> fieldsRow() {
+    public Row3<Integer, String, OffsetDateTime> fieldsRow() {
         return (Row3) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function3<? super Long, ? super String, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function3<? super Integer, ? super String, ? super OffsetDateTime, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -199,7 +203,7 @@ public class Link extends TableImpl<LinkRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Long, ? super String, ? super LocalDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Integer, ? super String, ? super OffsetDateTime, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
