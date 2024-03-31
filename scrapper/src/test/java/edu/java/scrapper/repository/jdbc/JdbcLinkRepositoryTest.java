@@ -129,6 +129,6 @@ class JdbcLinkRepositoryTest extends IntegrationTest {
         Optional<Link> updatedLinkOptional = jdbcLinkRepository.findByUrl(link.getUrl().toString());
 
         assertThat(updatedLinkOptional.isPresent()).isTrue();
-        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualTo(newLastCheckTime.toZonedDateTime());
+        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualToIgnoringNanos(newLastCheckTime.toZonedDateTime());
     }
 }

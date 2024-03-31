@@ -134,6 +134,6 @@ class JpaLinkRepositoryAdapterTest extends IntegrationTest {
         Optional<Link> updatedLinkOptional = jpaLinkRepositoryAdapter.findByUrl(link.getUrl().toString());
 
         assertThat(updatedLinkOptional.isPresent()).isTrue();
-        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualTo(newLastCheckTime.toZonedDateTime());
+        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualToIgnoringNanos(newLastCheckTime.toZonedDateTime());
     }
 }
