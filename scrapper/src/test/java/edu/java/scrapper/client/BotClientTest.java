@@ -25,7 +25,7 @@ public class BotClientTest {
     private ObjectMapper objectMapper;
 
     LinkUpdateRequest updateRequest = new LinkUpdateRequest(
-        1L,
+        1,
         URI.create("https://example.com"),
         "Example description",
         List.of(2L, 3L)

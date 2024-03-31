@@ -64,7 +64,7 @@ class LinkServiceImplTest {
         when(linkRepository.findByChatIdAndUrl(testChatId, testUrl.toString())).thenReturn(Optional.empty());
         when(linkRepository.save(eq(testChatId), any(Link.class))).thenAnswer(invocation -> {
             Link linkArgument = invocation.getArgument(1);
-            linkArgument.setId(1L);
+            linkArgument.setId(1);
             return linkArgument;
         });
 

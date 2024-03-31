@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Link {
-    private Long id;
+    private Integer id;
 
     @NotNull
     private URI url;

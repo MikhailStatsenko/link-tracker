@@ -105,7 +105,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Transactional
-    public void delete(long chatId, long linkId) {
+    public void delete(long chatId, int linkId) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put(CHAT_ID_KEY, chatId);
         paramMap.put(LINK_ID_KEY, linkId);
