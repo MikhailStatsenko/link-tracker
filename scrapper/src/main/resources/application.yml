@@ -5,17 +5,29 @@ app:
     force-check-delay: 10s
 
 api:
-  base-url:
-    github: https://api.github.com
-    stackoverflow: https://api.stackexchange.com/2.3
-    bot: http://localhost:8090
-  default-url:
-    github: https://api.github.com
-    stackoverflow: https://api.stackexchange.com/2.3
+  bot:
+    base-url: http://localhost:8090
+    update:
+      interval-ms: 10
+  github:
+    base-url: https://api.github.com
+    default-url: https://api.github.com
+    token: ${GITHUB_ACCESS_TOKEN}
+    events-count: 10
+  stackoverflow:
+    base-url: https://api.stackexchange.com/2.3
+    default-url: https://api.stackexchange.com/2.3
+
 
 spring:
   application:
     name: scrapper
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrapper
+    username: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
+  liquibase:
+    enabled: false
 
 server:
   port: 8080

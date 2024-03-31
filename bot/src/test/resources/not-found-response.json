@@ -1,0 +1,12 @@
+{
+    "description": "Not found",
+    "code": "404",
+    "exceptionName": "My Exception",
+    "exceptionMessage": "My Exception occurred",
+    "stacktrace": [
+        "java.lang.MyException",
+        "at com.example.myapp.Service.method(Service.java:123)",
+        "at com.example.myapp.Controller.handleRequest(Controller.java:45)",
+        "..."
+    ]
+}

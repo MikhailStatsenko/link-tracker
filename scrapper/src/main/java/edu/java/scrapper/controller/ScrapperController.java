@@ -6,7 +6,8 @@ import edu.java.scrapper.dto.api.response.ApiErrorResponse;
 import edu.java.scrapper.dto.api.response.LinkResponse;
 import edu.java.scrapper.dto.api.response.ListLinksResponse;
 import edu.java.scrapper.model.Link;
-import edu.java.scrapper.service.UserService;
+import edu.java.scrapper.service.ChatService;
+import edu.java.scrapper.service.LinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class ScrapperController {
-    private final UserService userService;
+    private final ChatService chatService;
+    private final LinkService linkService;
 
     @Operation(
         summary = "Убрать отслеживание ссылки",
@@ -51,7 +53,7 @@ public class ScrapperController {
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
         @Valid @RequestBody RemoveLinkRequest removeLinkRequest
     ) {
-        userService.deleteLink(tgChatId, removeLinkRequest.link());
+        linkService.remove(tgChatId, removeLinkRequest.link());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -68,7 +70,7 @@ public class ScrapperController {
     )
     @GetMapping("/links")
     ResponseEntity<ListLinksResponse> getLinks(@NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId) {
-        List<Link> links =  userService.getLinks(tgChatId);
+        List<Link> links = linkService.findAll(tgChatId);
         List<LinkResponse> linksResponses = links.stream().map(
             link -> new LinkResponse(link.getId(), link.getUrl())
         ).toList();
@@ -95,7 +97,7 @@ public class ScrapperController {
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
         @Valid @RequestBody AddLinkRequest addLinkRequest
     ) {
-        Link link = userService.addLink(tgChatId, addLinkRequest.link());
+        Link link = linkService.add(tgChatId, addLinkRequest.link());
         return new ResponseEntity<>(
             new LinkResponse(link.getId(), link.getUrl()),
             HttpStatus.OK
@@ -118,7 +120,7 @@ public class ScrapperController {
     public ResponseEntity<Void> deleteChat(
         @PathVariable Long id
     ) {
-        userService.deleteUser(id);
+        chatService.unregister(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -136,7 +138,7 @@ public class ScrapperController {
     public ResponseEntity<Void> addChat(
         @PathVariable Long id
     ) {
-        userService.addUser(id);
+        chatService.register(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
