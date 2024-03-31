@@ -3,8 +3,6 @@ package edu.java.scrapper.repository.jpa.adapter;
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
-import edu.java.scrapper.repository.jooq.JooqChatRepository;
-import edu.java.scrapper.repository.jooq.JooqLinkRepository;
 import edu.java.scrapper.repository.jpa.JpaChatRepository;
 import edu.java.scrapper.repository.jpa.JpaChatRepositoryAdapter;
 import edu.java.scrapper.repository.jpa.JpaLinkRepository;

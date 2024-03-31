@@ -5,10 +5,7 @@ import edu.java.scrapper.repository.LinkRepository;
 import edu.java.scrapper.repository.jooq.JooqChatRepository;
 import edu.java.scrapper.repository.jooq.JooqLinkRepository;
 import org.jooq.DSLContext;
-import org.jooq.conf.RenderQuotedNames;
-import org.jooq.impl.DefaultConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jooq.DefaultConfigurationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
