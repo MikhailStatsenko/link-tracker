@@ -6,13 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 import static edu.java.scrapper.repository.jooq.generated.Tables.CHAT;
 import static edu.java.scrapper.repository.jooq.generated.Tables.CHAT_LINK;
 
-@Primary
-@Repository
 @RequiredArgsConstructor
 public class JooqChatRepository implements ChatRepository {
     private final DSLContext dslContext;

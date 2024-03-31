@@ -3,18 +3,14 @@
  */
 package edu.java.scrapper.repository.jooq.generated.tables;
 
-
 import edu.java.scrapper.repository.jooq.generated.DefaultSchema;
 import edu.java.scrapper.repository.jooq.generated.Keys;
 import edu.java.scrapper.repository.jooq.generated.tables.records.LinkRecord;
-
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-
 import javax.annotation.processing.Generated;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.Field;

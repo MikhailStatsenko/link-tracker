@@ -1,8 +1,9 @@
 app:
   links-scheduler:
     enable: true
-    interval: 10s
+    interval: 10000
     force-check-delay: 10s
+  database-access-type: jpa
 
 api:
   bot:
@@ -18,7 +19,6 @@ api:
     base-url: https://api.stackexchange.com/2.3
     default-url: https://api.stackexchange.com/2.3
 
-
 spring:
   application:
     name: scrapper
@@ -26,6 +26,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/scrapper
     username: ${POSTGRESQL_USERNAME}
     password: ${POSTGRESQL_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
   liquibase:
     enabled: false
 

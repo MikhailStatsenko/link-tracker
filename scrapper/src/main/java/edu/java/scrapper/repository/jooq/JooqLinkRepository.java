@@ -9,15 +9,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 import static edu.java.scrapper.repository.jooq.generated.Tables.CHAT;
 import static edu.java.scrapper.repository.jooq.generated.Tables.CHAT_LINK;
 import static edu.java.scrapper.repository.jooq.generated.Tables.LINK;
 import static org.jooq.impl.DSL.field;
 
-@Primary
-@Repository
 @RequiredArgsConstructor
 public class JooqLinkRepository implements LinkRepository {
     private final DSLContext dslContext;

@@ -3,15 +3,11 @@
  */
 package edu.java.scrapper.repository.jooq.generated.tables.pojos;
 
-
 import jakarta.validation.constraints.Size;
-
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-
 import javax.annotation.processing.Generated;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

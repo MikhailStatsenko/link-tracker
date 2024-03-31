@@ -3,13 +3,9 @@
  */
 package edu.java.scrapper.repository.jooq.generated.tables.records;
 
-
 import edu.java.scrapper.repository.jooq.generated.tables.Chat;
-
 import java.beans.ConstructorProperties;
-
 import javax.annotation.processing.Generated;
-
 import org.jetbrains.annotations.NotNull;
 import org.jooq.Field;
 import org.jooq.Record1;

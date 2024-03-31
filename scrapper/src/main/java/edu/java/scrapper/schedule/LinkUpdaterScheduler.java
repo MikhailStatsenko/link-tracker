@@ -20,7 +20,7 @@ public class LinkUpdaterScheduler {
     private final BotClient botClient;
     private final UpdateService updateService;
 
-    @Scheduled(fixedDelayString = "#{@linksScheduler.interval()}")
+    @Scheduled(fixedDelayString = "${app.links-scheduler.interval}")
     public void update() {
         log.info("Looking for updates");
 

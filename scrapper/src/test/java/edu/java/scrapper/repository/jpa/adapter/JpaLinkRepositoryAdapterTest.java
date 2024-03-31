@@ -1,14 +1,17 @@
-package edu.java.scrapper.repository.jooq;
+package edu.java.scrapper.repository.jpa.adapter;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.repository.jpa.JpaChatRepository;
+import edu.java.scrapper.repository.jpa.JpaChatRepositoryAdapter;
+import edu.java.scrapper.repository.jpa.JpaLinkRepository;
+import edu.java.scrapper.repository.jpa.JpaLinkRepositoryAdapter;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class JooqLinkRepositoryTest extends IntegrationTest {
+class JpaLinkRepositoryAdapterTest extends IntegrationTest {
     @Autowired
-    DSLContext dsl;
-    private JooqChatRepository jooqChatRepository;
-    private JooqLinkRepository jooqLinkRepository;
+    private JpaLinkRepository jpaLinkRepository;
+    @Autowired
+    private JpaChatRepository jpaChatRepository;
+
+    private JpaChatRepositoryAdapter jpaChatRepositoryAdapter;
+    private JpaLinkRepositoryAdapter jpaLinkRepositoryAdapter;
 
     private static final Chat chat1 = new Chat(1L, new ArrayList<>());
     private static final Chat chat2 = new Chat(2L, new ArrayList<>());
@@ -32,21 +38,20 @@ class JooqLinkRepositoryTest extends IntegrationTest {
     private static final Link link3 = new Link(URI.create("https://stackoverflow.com/questions/123/what-is-question"));
 
     @BeforeEach
-    public void setUp() {
-        jooqChatRepository = new JooqChatRepository(dsl);
-        jooqLinkRepository = new JooqLinkRepository(dsl);
-        jooqChatRepository.save(chat1);
-        jooqChatRepository.save(chat2);
-
+    void setUp() {
+        jpaChatRepositoryAdapter = new JpaChatRepositoryAdapter(jpaChatRepository);
+        jpaLinkRepositoryAdapter = new JpaLinkRepositoryAdapter(jpaLinkRepository);
+        jpaChatRepositoryAdapter.save(chat1);
+        jpaChatRepositoryAdapter.save(chat2);
     }
 
     @Test
     public void testFindAll() {
-        jooqLinkRepository.save(chat1.getId(), link1);
-        jooqLinkRepository.save(chat2.getId(), link2);
-        jooqLinkRepository.save(chat2.getId(), link3);
+        jpaLinkRepositoryAdapter.save(chat1.getId(), link1);
+        jpaLinkRepositoryAdapter.save(chat2.getId(), link2);
+        jpaLinkRepositoryAdapter.save(chat2.getId(), link3);
 
-        List<Link> links = jooqLinkRepository.findAll();
+        List<Link> links = jpaLinkRepositoryAdapter.findAll();
 
         assertThat(links.size()).isEqualTo(3);
         assertThat(links.stream().map(Link::getUrl).toList())
@@ -55,11 +60,11 @@ class JooqLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testFindAllByChatId() {
-        jooqLinkRepository.save(chat1.getId(), link1);
-        jooqLinkRepository.save(chat2.getId(), link2);
-        jooqLinkRepository.save(chat2.getId(), link3);
+        jpaLinkRepositoryAdapter.save(chat1.getId(), link1);
+        jpaLinkRepositoryAdapter.save(chat2.getId(), link2);
+        jpaLinkRepositoryAdapter.save(chat2.getId(), link3);
 
-        List<Link> links = jooqLinkRepository.findAllByChatId(chat2.getId());
+        List<Link> links = jpaLinkRepositoryAdapter.findAllByChatId(chat2.getId());
 
         assertThat(links.size()).isEqualTo(2);
         assertThat(links.stream().map(Link::getUrl).toList())
@@ -71,19 +76,19 @@ class JooqLinkRepositoryTest extends IntegrationTest {
         link1.setLastCheckTime(OffsetDateTime.now().minusDays(1));
         link2.setLastCheckTime(OffsetDateTime.now());
 
-        jooqLinkRepository.save(chat2.getId(), link1);
-        jooqLinkRepository.save(chat2.getId(), link2);
+        jpaLinkRepositoryAdapter.save(chat2.getId(), link1);
+        jpaLinkRepositoryAdapter.save(chat2.getId(), link2);
 
-        List<Link> foundLinks = jooqLinkRepository.findAllOutdatedLinks(1000);
+        List<Link> foundLinks = jpaLinkRepositoryAdapter.findAllOutdatedLinks(1000);
 
         assertThat(foundLinks.stream().map(Link::getUrl).toList()).containsOnly(link1.getUrl());
     }
 
     @Test
     public void testFindByUrl() {
-        jooqLinkRepository.save(chat1.getId(), link1);
+        jpaLinkRepositoryAdapter.save(chat1.getId(), link1);
 
-        Optional<Link> foundLink = jooqLinkRepository.findByUrl(link1.getUrl().toString());
+        Optional<Link> foundLink = jpaLinkRepositoryAdapter.findByUrl(link1.getUrl().toString());
 
         assertThat(foundLink.isPresent()).isTrue();
         assertThat(foundLink.get().getUrl()).isEqualTo(link1.getUrl());
@@ -91,8 +96,8 @@ class JooqLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testFindByChatIdAndUrl() {
-        jooqLinkRepository.save(chat1.getId(), link1);
-        Optional<Link> foundLink = jooqLinkRepository.findByChatIdAndUrl(chat1.getId(), link1.getUrl().toString());
+        jpaLinkRepositoryAdapter.save(chat1.getId(), link1);
+        Optional<Link> foundLink = jpaLinkRepositoryAdapter.findByChatIdAndUrl(chat1.getId(), link1.getUrl().toString());
 
         assertThat(foundLink).isPresent();
         assertThat(foundLink.get().getUrl()).isEqualTo(link1.getUrl());
@@ -100,8 +105,8 @@ class JooqLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testSave() {
-        jooqLinkRepository.save(chat1.getId(), link1);
-        Optional<Link> foundLink = jooqLinkRepository.findByUrl(link1.getUrl().toString());
+        jpaLinkRepositoryAdapter.save(chat1.getId(), link1);
+        Optional<Link> foundLink = jpaLinkRepositoryAdapter.findByUrl(link1.getUrl().toString());
 
         assertThat(foundLink).isNotEmpty();
         assertThat(foundLink.get().getUrl()).isEqualTo(link1.getUrl());
@@ -109,14 +114,15 @@ class JooqLinkRepositoryTest extends IntegrationTest {
 
     @Test
     public void testDeleteLink() {
-        jooqLinkRepository.save(chat1.getId(), link2);
+        jpaLinkRepositoryAdapter.save(chat1.getId(), link2);
 
-        Optional<Link> foundLink = jooqLinkRepository.findByUrl(link2.getUrl().toString());
+        Optional<Link> foundLink = jpaLinkRepositoryAdapter.findByUrl(link2.getUrl().toString());
         assertThat(foundLink).isNotEmpty();
 
-        jooqLinkRepository.delete(chat1.getId(), foundLink.get().getId());
-        foundLink = jooqLinkRepository.findByUrl(link1.getUrl().toString());
+        jpaLinkRepositoryAdapter.delete(chat1.getId(), foundLink.get().getId());
+        foundLink = jpaLinkRepositoryAdapter.findByUrl(link1.getUrl().toString());
 
         assertThat(foundLink).isEmpty();
     }
+
 }
