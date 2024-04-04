@@ -45,6 +45,9 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "404", description = "Ссылка не найдена", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
@@ -64,6 +67,9 @@ public class ScrapperController {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ListLinksResponse.class))
             }),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
@@ -89,6 +95,9 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
@@ -113,6 +122,9 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "404", description = "Чат не существует", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
@@ -130,6 +142,9 @@ public class ScrapperController {
         responses = {
             @ApiResponse(responseCode = "200", description = "Чат зарегистрирован"),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }

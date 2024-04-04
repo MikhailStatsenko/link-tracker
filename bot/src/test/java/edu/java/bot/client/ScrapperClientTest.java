@@ -1,6 +1,8 @@
 package edu.java.bot.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.bot.configuration.retry.ClientRetryConfig;
+import edu.java.bot.configuration.retry.RetryPolicy;
 import edu.java.bot.dto.request.AddLinkRequest;
 import edu.java.bot.dto.request.RemoveLinkRequest;
 import edu.java.bot.dto.response.LinkResponse;
@@ -11,9 +13,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.ResourceUtils;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -28,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class ScrapperClientTest {
     private WireMockServer wireMockServer;
     private ScrapperClient scrapperClient;
+    private ClientRetryConfig.ScrapperClientRetryConfig retryConfig;
 
     private static final String TG_CHAT_ENDPOINT = "/tg-chat";
     private static final String LINKS_ENDPOINT = "/links";
@@ -41,7 +46,17 @@ public class ScrapperClientTest {
     public void setUp() {
         wireMockServer = new WireMockServer(8888);
         wireMockServer.start();
-        scrapperClient = new ScrapperClient("http://localhost:" + wireMockServer.port());
+
+        retryConfig = new ClientRetryConfig.ScrapperClientRetryConfig(
+            ClientRetryConfig.RetryProperties.builder()
+                .retryPolicy(RetryPolicy.CONSTANT)
+                .maxAttempts(3)
+                .waitDuration(2)
+                .codes(Set.of(HttpStatus.INTERNAL_SERVER_ERROR))
+                .build()
+        );
+
+        scrapperClient = new ScrapperClient("http://localhost:" + wireMockServer.port(), retryConfig.getRetry());
     }
 
     @AfterEach

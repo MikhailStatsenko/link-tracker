@@ -28,6 +28,9 @@ public class BotController {
             @ApiResponse(responseCode = "200", description = "Обновление обработано"),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )

@@ -10,14 +10,31 @@ api:
     base-url: http://localhost:8090
     update:
       interval-ms: 10
+    retry:
+      retry-policy: constant
+      max-attempts: 3
+      wait-duration: 2
+      codes: INTERNAL_SERVER_ERROR, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS
   github:
     base-url: https://api.github.com
     default-url: https://api.github.com
     token: ${GITHUB_ACCESS_TOKEN}
     events-count: 10
+    retry:
+      retry-policy: linear
+      max-attempts: 5
+      wait-duration: 2
+      linear-coefficient: 2
+      codes: INTERNAL_SERVER_ERROR, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS
   stackoverflow:
     base-url: https://api.stackexchange.com/2.3
     default-url: https://api.stackexchange.com/2.3
+    retry:
+      retry-policy: exponential
+      max-attempts: 5
+      wait-duration: 2
+      exponential-multiplier: 1.3
+      codes: INTERNAL_SERVER_ERROR, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS
 
 spring:
   application:
@@ -32,6 +49,10 @@ spring:
       ddl-auto: validate
   liquibase:
     enabled: false
+
+rate-limit:
+  token-count: 5
+  refill-period: 30
 
 server:
   port: 8080
