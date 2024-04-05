@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class UpdateHandlerTest {
     private UpdateHandler updateHandler;
@@ -26,6 +28,14 @@ class UpdateHandlerTest {
     @Test
     public void testSupportsWithNonMatchingHost() {
         URI uri = URI.create("http://otherhost.com/path");
+        assertThat(updateHandler.supports(uri)).isFalse();
+    }
+
+    @Test
+    public void testSupportsWithNullHost() {
+        URI uri = mock(URI.class);
+        when(uri.getHost()).thenReturn(null);
+
         assertThat(updateHandler.supports(uri)).isFalse();
     }
 

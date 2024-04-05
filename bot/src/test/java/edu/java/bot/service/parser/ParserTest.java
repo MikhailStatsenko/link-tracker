@@ -4,6 +4,8 @@ import java.net.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ParserTest {
     private Parser parser;
@@ -24,6 +26,15 @@ public class ParserTest {
         URI uri = URI.create("http://otherhost.com/path");
         assertThat(parser.supports(uri)).isFalse();
     }
+
+    @Test
+    public void testSupportsWithNullHost() {
+        URI uri = mock(URI.class);
+        when(uri.getHost()).thenReturn(null);
+
+        assertThat(parser.supports(uri)).isFalse();
+    }
+
 
     private static class TestParser implements Parser {
         private static final String HOST = "example.com";

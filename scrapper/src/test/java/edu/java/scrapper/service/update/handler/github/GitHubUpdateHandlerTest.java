@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.java.scrapper.client.GitHubClient;
 import edu.java.scrapper.dto.api.Update;
 import edu.java.scrapper.dto.external.github.EventResponse;
+import edu.java.scrapper.exception.NoSuchRepositoryException;
 import edu.java.scrapper.model.Link;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -17,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -83,6 +85,16 @@ class GitHubUpdateHandlerTest {
         when(gitHubClient.fetchEvents("user", "repository")).thenReturn(events);
 
         List<Optional<Update>> updates = handler.fetchUpdates(link);
+        assertThat(updates).isEmpty();
+    }
+
+    @Test
+    void testFetchUpdatesHandlesNoSuchRepositoryException() {
+        link.setLastCheckTime(OffsetDateTime.now().minusDays(1));
+        when(gitHubClient.fetchEvents(anyString(), anyString())).thenThrow(NoSuchRepositoryException.class);
+
+        List<Optional<Update>> updates = handler.fetchUpdates(link);
+
         assertThat(updates).isEmpty();
     }
 }
