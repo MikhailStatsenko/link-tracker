@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.dto.request.LinkUpdate;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.service.UpdateService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,8 +35,8 @@ public class BotController {
         }
     )
     @PostMapping("/updates")
-    public ResponseEntity<Void> processUpdate(@Valid @RequestBody LinkUpdate linkUpdate) {
-        updateService.processUpdate(linkUpdate);
+    public ResponseEntity<Void> processUpdate(@Valid @RequestBody LinkUpdateRequest linkUpdateRequest) {
+        updateService.processUpdate(linkUpdateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -1,5 +1,14 @@
 app:
   telegram-token: ${TELEGRAM_API_TOKEN}
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    consumer:
+      group-id: bot-messages
+      mappings: edu.java.scrapper.dto.bot.LinkUpdateRequest:edu.java.bot.dto.request.LinkUpdateRequest
+    topic-name: bot-updates
+    trusted-packages: "*"
+    dql-topic: bot-updates-dlq
 
 spring:
   application:

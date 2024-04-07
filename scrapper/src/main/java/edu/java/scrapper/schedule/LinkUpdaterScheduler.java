@@ -1,7 +1,7 @@
 package edu.java.scrapper.schedule;
 
-import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.dto.bot.LinkUpdateRequest;
+import edu.java.scrapper.service.update.UpdateSender;
 import edu.java.scrapper.service.update.UpdateService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class LinkUpdaterScheduler {
     @Value("${api.bot.update.interval-ms}")
     private long interval;
 
-    private final BotClient botClient;
+    private final UpdateSender updateSender;
     private final UpdateService updateService;
 
     @Scheduled(fixedDelayString = "${app.links-scheduler.interval}")
@@ -26,7 +26,7 @@ public class LinkUpdaterScheduler {
 
         List<LinkUpdateRequest> updateRequests = updateService.fetchAllUpdates(interval);
         for (var updateRequest : updateRequests) {
-            botClient.sendUpdates(updateRequest);
+            updateSender.sendUpdates(updateRequest);
         }
         log.info("All links are up to date");
     }

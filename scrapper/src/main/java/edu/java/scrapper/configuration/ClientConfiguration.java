@@ -1,6 +1,5 @@
 package edu.java.scrapper.configuration;
 
-import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.client.GitHubClient;
 import edu.java.scrapper.client.StackOverflowClient;
 import edu.java.scrapper.configuration.retry.ClientRetryConfig;
@@ -20,9 +19,6 @@ public class ClientConfiguration {
     @Value("${api.stackoverflow.base-url:${api.stackoverflow.default-url}}")
     private String stackOverflowBaseUrl;
 
-    @Value("${api.bot.base-url}")
-    private String botBaseUrl;
-
     @Value("${api.github.events-count}")
     int githubEventsCount;
 
@@ -37,10 +33,5 @@ public class ClientConfiguration {
     @Bean
     public StackOverflowClient stackOverflowWebClient() {
         return new StackOverflowClient(stackOverflowBaseUrl, retryConfig.stackoverflow().getRetry());
-    }
-
-    @Bean
-    public BotClient botWebClient() {
-        return new BotClient(botBaseUrl,  retryConfig.bot().getRetry());
     }
 }

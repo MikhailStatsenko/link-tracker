@@ -28,8 +28,41 @@ services:
     networks:
       - backend
 
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_SERVER_ID: 1
+    volumes:
+      - zookeeper:/var/lib/zookeeper
+    networks:
+      - backend
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 1
+    depends_on:
+      - zookeeper
+    volumes:
+      - kafka:/var/lib/kafka
+    networks:
+      - backend
+
 volumes:
   postgresql: { }
+  zookeeper: { }
+  kafka: { }
 
 networks:
   backend: { }
