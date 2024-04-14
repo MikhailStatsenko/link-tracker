@@ -2,6 +2,7 @@ package edu.java.bot.service.kafka;
 
 import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.service.UpdateService;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,6 +19,7 @@ public class BotQueueConsumer {
         topics = "${app.kafka.topic-name}",
         groupId = "${app.kafka.consumer.group-id}"
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     public void listen(LinkUpdateRequest update) {
         try {
             updateService.processUpdate(update);
