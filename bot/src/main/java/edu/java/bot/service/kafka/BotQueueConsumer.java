@@ -23,7 +23,7 @@ public class BotQueueConsumer {
             updateService.processUpdate(update);
             log.info("Update processed: {}", update);
         } catch (Exception e) {
-            log.info("An error occurred while processing update. Sending to DLQ.");
+            log.error("An error occurred while processing update. Sending to DLQ.");
             dlqProducer.send(update);
         }
     }
