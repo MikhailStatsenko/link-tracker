@@ -16,7 +16,7 @@ public class ScrapperQueueProducer implements UpdateSender {
     }
 
     public void sendUpdates(LinkUpdateRequest update) {
-        log.debug("Sending update {}", update);
+        log.debug("Sending kafka update {}", update);
         kafkaTemplate.send(topicName, update);
     }
 }
