@@ -1,7 +1,7 @@
 FROM openjdk:21 as builder
 ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} scrapper.jar
-RUN java -Djarmode=layertools -jar scrapper.jar extract
+COPY ${JAR_FILE} bot.jar
+RUN java -Djarmode=layertools -jar bot.jar extract
 
 FROM openjdk:21
 COPY --from=builder dependencies/ ./
