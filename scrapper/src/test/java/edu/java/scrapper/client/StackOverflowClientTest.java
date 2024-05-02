@@ -1,14 +1,18 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.scrapper.configuration.retry.ClientRetryConfig;
+import edu.java.scrapper.configuration.retry.RetryPolicy;
 import edu.java.scrapper.dto.external.QuestionResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -21,12 +25,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class StackOverflowClientTest {
     private WireMockServer wireMockServer;
     private StackOverflowClient stackOverflowClient;
+    private ClientRetryConfig.StackOverflowClientRetryConfig retryConfig;
 
     @BeforeEach
     public void setUp() {
         wireMockServer = new WireMockServer(8888);
         wireMockServer.start();
-        stackOverflowClient = new StackOverflowClient("http://localhost:" + wireMockServer.port());
+
+        retryConfig = new ClientRetryConfig.StackOverflowClientRetryConfig(
+            ClientRetryConfig.RetryProperties.builder()
+                .retryPolicy(RetryPolicy.CONSTANT)
+                .maxAttempts(3)
+                .waitDuration(2)
+                .codes(Set.of(HttpStatus.INTERNAL_SERVER_ERROR))
+                .build()
+        );
+
+        stackOverflowClient = new StackOverflowClient("http://localhost:" + wireMockServer.port(), retryConfig.getRetry());
     }
 
     @AfterEach

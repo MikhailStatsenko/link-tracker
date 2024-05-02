@@ -8,6 +8,7 @@ import edu.java.scrapper.dto.api.response.ListLinksResponse;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
+import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -45,9 +46,13 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "404", description = "Ссылка не найдена", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @DeleteMapping("/links")
     public ResponseEntity<LinkResponse> deleteLink(
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
@@ -65,9 +70,13 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @GetMapping("/links")
     ResponseEntity<ListLinksResponse> getLinks(@NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId) {
         List<Link> links = linkService.findAll(tgChatId);
@@ -89,9 +98,13 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @PostMapping("/links")
     public ResponseEntity<LinkResponse> addLink(
         @NotNull @RequestHeader(value = "Tg-Chat-Id") Long tgChatId,
@@ -113,9 +126,13 @@ public class ScrapperController {
             }),
             @ApiResponse(responseCode = "404", description = "Чат не существует", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @DeleteMapping("/tg-chat/{id}")
     public ResponseEntity<Void> deleteChat(
         @PathVariable Long id
@@ -131,9 +148,13 @@ public class ScrapperController {
             @ApiResponse(responseCode = "200", description = "Чат зарегистрирован"),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @PostMapping("/tg-chat/{id}")
     public ResponseEntity<Void> addChat(
         @PathVariable Long id

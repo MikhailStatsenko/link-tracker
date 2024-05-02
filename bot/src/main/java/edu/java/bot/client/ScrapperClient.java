@@ -7,6 +7,7 @@ import edu.java.bot.dto.response.LinkResponse;
 import edu.java.bot.dto.response.ListLinksResponse;
 import edu.java.bot.exception.ApiBadRequestException;
 import edu.java.bot.exception.ApiNotFoundException;
+import io.github.resilience4j.retry.Retry;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -16,14 +17,17 @@ public class ScrapperClient {
     private static final String TG_CHAT_ENDPOINT = "/tg-chat";
     private static final String LINKS_ENDPOINT = "/links";
     private static final String TG_CHAT_ID_HEADER = "Tg-Chat-Id";
+
+    private final Retry retry;
     private final WebClient webClient;
 
-    public ScrapperClient(String scrapperBaseUrl) {
+    public ScrapperClient(String scrapperBaseUrl, Retry retry) {
+        this.retry = retry;
         this.webClient = WebClient.create(scrapperBaseUrl);
     }
 
     public Void registerChat(Long chatId) {
-        return webClient
+        return Retry.decorateSupplier(retry, () -> webClient
             .post().uri(TG_CHAT_ENDPOINT + "/" + chatId)
             .retrieve()
             .onStatus(
@@ -31,12 +35,12 @@ public class ScrapperClient {
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
             )
             .bodyToMono(Void.class)
-            .block();
+            .block()).get();
     }
 
     public Void deleteChat(Long chatId) {
-        return webClient.delete()
-            .uri(TG_CHAT_ENDPOINT + "/" + chatId)
+        return Retry.decorateSupplier(retry, () -> webClient
+            .delete().uri(TG_CHAT_ENDPOINT + "/" + chatId)
             .retrieve()
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
@@ -47,29 +51,27 @@ public class ScrapperClient {
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiNotFoundException::new)
             )
             .bodyToMono(Void.class)
-            .block();
+            .block()).get();
+
     }
 
     public ListLinksResponse getLinks(Long chatId) {
-        return webClient.get()
+        return Retry.decorateSupplier(retry, () -> webClient
+            .get()
             .uri(LINKS_ENDPOINT)
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .retrieve()
-//            .onStatus(
-//                HttpStatus.BAD_REQUEST::equals,
-//                response -> response.bodyToMono(ApiErrorResponse.class)
-//                    .flatMap(error -> Mono.error(new ApiBadRequestException(error)))
-//            )
             .onStatus(
                 HttpStatus.BAD_REQUEST::equals,
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
             )
             .bodyToMono(ListLinksResponse.class)
-            .block();
+            .block()).get();
     }
 
     public LinkResponse addLink(Long chatId, AddLinkRequest request) {
-        return webClient.post()
+        return Retry.decorateSupplier(retry, () -> webClient
+            .post()
             .uri(LINKS_ENDPOINT)
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .body(BodyInserters.fromValue(request))
@@ -79,11 +81,12 @@ public class ScrapperClient {
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiBadRequestException::new)
             )
             .bodyToMono(LinkResponse.class)
-            .block();
+            .block()).get();
     }
 
     public LinkResponse deleteLink(Long chatId, RemoveLinkRequest request) {
-        return webClient.method(HttpMethod.DELETE)
+        return Retry.decorateSupplier(retry, () -> webClient
+            .method(HttpMethod.DELETE)
             .uri(LINKS_ENDPOINT)
             .header(TG_CHAT_ID_HEADER, String.valueOf(chatId))
             .body(BodyInserters.fromValue(request))
@@ -97,6 +100,6 @@ public class ScrapperClient {
                 response -> response.bodyToMono(ApiErrorResponse.class).map(ApiNotFoundException::new)
             )
             .bodyToMono(LinkResponse.class)
-            .block();
+            .block()).get();
     }
 }

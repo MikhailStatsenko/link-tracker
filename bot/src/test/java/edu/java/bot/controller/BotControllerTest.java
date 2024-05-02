@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.dto.request.LinkUpdate;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.service.UpdateService;
 import java.net.URI;
 import java.util.List;
@@ -26,16 +26,16 @@ class BotControllerTest {
 
     @Test
     void testProcessUpdate_Success() {
-        LinkUpdate linkUpdate = new LinkUpdate(
+        LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(
             1L,
             URI.create("http://example.com"),
             "Description",
             List.of(123L)
         );
 
-        ResponseEntity<Void> responseEntity = botController.processUpdate(linkUpdate);
+        ResponseEntity<Void> responseEntity = botController.processUpdate(linkUpdateRequest);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(updateService, times(1)).processUpdate(linkUpdate);
+        verify(updateService, times(1)).processUpdate(linkUpdateRequest);
     }
 }

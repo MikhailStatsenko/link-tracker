@@ -1,16 +1,20 @@
 package edu.java.scrapper.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import edu.java.scrapper.configuration.retry.ClientRetryConfig;
+import edu.java.scrapper.configuration.retry.RetryPolicy;
 import edu.java.scrapper.dto.external.github.EventResponse;
 import edu.java.scrapper.exception.NoSuchRepositoryException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.ResourceUtils;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
@@ -23,12 +27,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class GitHubClientTest {
     private WireMockServer wireMockServer;
     private GitHubClient gitHubClient;
+    private ClientRetryConfig.GitHubClientRetryConfig retryConfig;
 
     @BeforeEach
     public void setUp() {
         wireMockServer = new WireMockServer(8888);
         wireMockServer.start();
-        gitHubClient = new GitHubClient("http://localhost:" + wireMockServer.port(), "token", 10);
+
+        retryConfig = new ClientRetryConfig.GitHubClientRetryConfig(
+            ClientRetryConfig.RetryProperties.builder()
+                .retryPolicy(RetryPolicy.CONSTANT)
+                .maxAttempts(3)
+                .waitDuration(2)
+                .codes(Set.of(HttpStatus.INTERNAL_SERVER_ERROR))
+                .build()
+        );
+
+        gitHubClient = new GitHubClient("http://localhost:" + wireMockServer.port(), "token", 10, retryConfig.getRetry());
     }
 
     @AfterEach
@@ -51,6 +66,7 @@ class GitHubClientTest {
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
         assertThatThrownBy(() -> gitHubClient.fetchEvents(username, repository))
+//            .isInstanceOf(WebClientResponseException.class);
             .isInstanceOf(NoSuchRepositoryException.class);
     }
 

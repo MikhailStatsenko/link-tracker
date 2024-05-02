@@ -1,7 +1,7 @@
 package edu.java.bot.service;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dto.request.LinkUpdate;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class UpdateService {
     private final LinkTrackerBot bot;
 
-    public void processUpdate(LinkUpdate update) {
+    public void processUpdate(LinkUpdateRequest update) {
         for (long chatId : update.tgChatIds()) {
             bot.execute(new SendMessage(chatId, "Произошли обновления на ресурсе: "
                 + update.url() + "\n\n"

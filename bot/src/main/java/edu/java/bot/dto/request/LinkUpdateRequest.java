@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 
-public record LinkUpdate(
+public record LinkUpdateRequest(
     @NotNull
     @JsonProperty("id")
     Long id,

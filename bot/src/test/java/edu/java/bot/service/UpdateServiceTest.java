@@ -1,7 +1,7 @@
 package edu.java.bot.service;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.dto.request.LinkUpdate;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import java.net.URI;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ public class UpdateServiceTest {
 
     @Test
     public void testProcessUpdate() {
-        LinkUpdate update = new LinkUpdate(1L, URI.create("http://example.com"), "Description", List.of(1L, 2L));
+        LinkUpdateRequest update = new LinkUpdateRequest(1L, URI.create("http://example.com"), "Description", List.of(1L, 2L));
 
         updateService.processUpdate(update);
 
