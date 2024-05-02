@@ -3,6 +3,7 @@ package edu.java.bot.controller;
 import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.service.UpdateService;
+import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,6 +35,7 @@ public class BotController {
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @PostMapping("/updates")
     public ResponseEntity<Void> processUpdate(@Valid @RequestBody LinkUpdateRequest linkUpdateRequest) {
         updateService.processUpdate(linkUpdateRequest);
