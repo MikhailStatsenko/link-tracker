@@ -1,8 +1,9 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.dto.request.LinkUpdate;
+import edu.java.bot.dto.request.LinkUpdateRequest;
 import edu.java.bot.dto.response.ApiErrorResponse;
 import edu.java.bot.service.UpdateService;
+import io.micrometer.core.annotation.Counted;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,12 +29,16 @@ public class BotController {
             @ApiResponse(responseCode = "200", description = "Обновление обработано"),
             @ApiResponse(responseCode = "400", description = "Некорректные параметры запроса", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "429", description = "Превышен лимит запросов", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
             })
         }
     )
+    @Counted(value = "api_counter", description = "Amount of requests to API")
     @PostMapping("/updates")
-    public ResponseEntity<Void> processUpdate(@Valid @RequestBody LinkUpdate linkUpdate) {
-        updateService.processUpdate(linkUpdate);
+    public ResponseEntity<Void> processUpdate(@Valid @RequestBody LinkUpdateRequest linkUpdateRequest) {
+        updateService.processUpdate(linkUpdateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

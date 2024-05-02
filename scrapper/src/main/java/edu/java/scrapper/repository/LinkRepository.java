@@ -18,7 +18,7 @@ public interface LinkRepository {
 
     Link save(long chatId, Link link);
 
-    void delete(long chatId, long linkId);
+    void delete(long chatId, int linkId);
 
     void setLastCheckTime(Link link, OffsetDateTime lastCheckTime);
 }

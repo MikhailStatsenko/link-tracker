@@ -9,15 +9,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 import static edu.java.scrapper.repository.jooq.generated.Tables.CHAT;
 import static edu.java.scrapper.repository.jooq.generated.Tables.CHAT_LINK;
 import static edu.java.scrapper.repository.jooq.generated.Tables.LINK;
 import static org.jooq.impl.DSL.field;
 
-@Primary
-@Repository
 @RequiredArgsConstructor
 public class JooqLinkRepository implements LinkRepository {
     private final DSLContext dslContext;
@@ -83,18 +79,19 @@ public class JooqLinkRepository implements LinkRepository {
         if (savedLink.isEmpty()) {
             LinkRecord linkRecord = dslContext
                 .insertInto(LINK, LINK.URL, LINK.LAST_CHECK_TIME)
-                .values(link.getUrl().toString(), link.getLastCheckTime().toLocalDateTime())
+                .values(link.getUrl().toString(), link.getLastCheckTime())
                 .returning().fetchOne();
             savedLink = Optional.of(linkRecord.into(Link.class));
         }
 
         dslContext.insertInto(CHAT_LINK, CHAT_LINK.CHAT_ID, CHAT_LINK.LINK_ID)
             .values(chatId, savedLink.get().getId()).execute();
+
         return savedLink.get();
     }
 
     @Override
-    public void delete(long chatId, long linkId) {
+    public void delete(long chatId, int linkId) {
         dslContext.deleteFrom(CHAT_LINK)
             .where(CHAT_LINK.CHAT_ID.eq(chatId))
             .and(CHAT_LINK.LINK_ID.eq(linkId))
@@ -114,7 +111,7 @@ public class JooqLinkRepository implements LinkRepository {
     public void setLastCheckTime(Link link, OffsetDateTime lastCheckTime) {
         dslContext
             .update(LINK)
-            .set(LINK.LAST_CHECK_TIME, lastCheckTime.toLocalDateTime())
+            .set(LINK.LAST_CHECK_TIME, lastCheckTime)
             .where(LINK.ID.eq(link.getId()))
             .execute();
     }

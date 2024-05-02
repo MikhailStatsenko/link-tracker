@@ -45,7 +45,7 @@ class ScrapperControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(mockLink.getId()).thenReturn(1L);
+        when(mockLink.getId()).thenReturn(1);
         when(mockLink.getUrl()).thenReturn(testUrl);
     }
 

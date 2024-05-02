@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,10 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class JdbcLinkRepositoryTest extends IntegrationTest {
     @Autowired
-    private JdbcLinkRepository jdbcLinkRepository;
+    NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Autowired
     private JdbcChatRepository jdbcChatRepository;
+    private JdbcLinkRepository jdbcLinkRepository;
 
     private static final Chat chat1 = new Chat(1L, new ArrayList<>());
     private static final Chat chat2 = new Chat(2L, new ArrayList<>());
@@ -32,7 +33,9 @@ class JdbcLinkRepositoryTest extends IntegrationTest {
     private static final Link link3 = new Link(URI.create("https://stackoverflow.com/questions/123/what-is-question"));
 
     @BeforeEach
-    public void beforeEach() {
+    public void setUp() {
+        jdbcChatRepository = new JdbcChatRepository(jdbcTemplate);
+        jdbcLinkRepository = new JdbcLinkRepository(jdbcTemplate);
         jdbcChatRepository.save(chat1);
         jdbcChatRepository.save(chat2);
     }
@@ -115,5 +118,17 @@ class JdbcLinkRepositoryTest extends IntegrationTest {
         foundLink = jdbcLinkRepository.findByUrl(link1.getUrl().toString());
 
         assertThat(foundLink).isEmpty();
+    }
+
+    @Test
+    public void testSetLastCheckTime() {
+        Link link = jdbcLinkRepository.save(chat1.getId(), link1);
+        OffsetDateTime newLastCheckTime = OffsetDateTime.now().minusDays(1);
+
+        jdbcLinkRepository.setLastCheckTime(link, newLastCheckTime);
+        Optional<Link> updatedLinkOptional = jdbcLinkRepository.findByUrl(link.getUrl().toString());
+
+        assertThat(updatedLinkOptional.isPresent()).isTrue();
+        assertThat(updatedLinkOptional.get().getLastCheckTime().toZonedDateTime()).isEqualToIgnoringNanos(newLastCheckTime.toZonedDateTime());
     }
 }

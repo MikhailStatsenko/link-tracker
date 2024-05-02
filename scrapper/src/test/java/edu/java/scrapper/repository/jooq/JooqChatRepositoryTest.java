@@ -7,6 +7,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.jooq.DSLContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,14 +19,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class JooqChatRepositoryTest extends IntegrationTest {
     @Autowired
+    DSLContext dsl;
     private JooqChatRepository jooqChatRepository;
-
-    @Autowired
     private JooqLinkRepository jooqLinkRepository;
 
     private static final Chat chat1 = new Chat(1L, new ArrayList<>());
     private static final Chat chat2 = new Chat(2L, new ArrayList<>());
     private static final Chat chat3 = new Chat(3L, new ArrayList<>());
+
+    @BeforeEach
+    void setUp() {
+        jooqChatRepository = new JooqChatRepository(dsl);
+        jooqLinkRepository = new JooqLinkRepository(dsl);
+    }
 
     @Test
     public void testFindAll() {

@@ -9,7 +9,7 @@ import java.util.List;
 public record LinkUpdateRequest(
     @NotNull
     @JsonProperty("id")
-    Long id,
+    Integer id,
 
     @NotNull
     @JsonProperty("url")

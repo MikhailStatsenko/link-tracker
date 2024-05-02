@@ -2,7 +2,7 @@ package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.LinkAlreadyTrackedException;
 import edu.java.scrapper.model.Link;
-import edu.java.scrapper.repository.jdbc.JdbcLinkRepository;
+import edu.java.scrapper.repository.LinkRepository;
 import edu.java.scrapper.service.LinkService;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
-    private final JdbcLinkRepository linkRepository;
+    private final LinkRepository linkRepository;
 
     @Override
     public List<Link> findAll(long chatId) {

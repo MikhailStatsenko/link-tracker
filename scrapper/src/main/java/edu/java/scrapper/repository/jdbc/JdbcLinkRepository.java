@@ -10,10 +10,8 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
 @RequiredArgsConstructor
 public class JdbcLinkRepository implements LinkRepository {
     private static final String URL_KEY = "url";
@@ -105,7 +103,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Transactional
-    public void delete(long chatId, long linkId) {
+    public void delete(long chatId, int linkId) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put(CHAT_ID_KEY, chatId);
         paramMap.put(LINK_ID_KEY, linkId);

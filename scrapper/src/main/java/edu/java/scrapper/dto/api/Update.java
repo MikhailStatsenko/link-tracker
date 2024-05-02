@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 public record Update(
     @NotNull
-    Long linkId,
+    Integer linkId,
 
     @NotBlank
     String url,

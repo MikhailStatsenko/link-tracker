@@ -6,7 +6,7 @@ import java.net.URI;
 
 public record LinkResponse(
     @JsonProperty("id")
-    Long id,
+    Integer id,
 
     @NotNull
     @JsonProperty("url")
