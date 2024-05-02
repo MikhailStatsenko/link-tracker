@@ -1,9 +1,14 @@
 app:
   links-scheduler:
     enable: true
-    interval: 10000
+    interval: 15000
     force-check-delay: 10s
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    topic-name: bot-updates
   database-access-type: jpa
+  use-queue: true
 
 api:
   bot:
@@ -63,3 +68,32 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+      path-mapping:
+        prometheus: /metrics
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 1m
+  metrics:
+    tags:
+      application: ${spring.application.name}

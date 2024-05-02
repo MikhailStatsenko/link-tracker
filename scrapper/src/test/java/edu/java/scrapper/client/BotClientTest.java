@@ -21,7 +21,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class BotClientTest {
     private WireMockServer wireMockServer;
@@ -67,16 +66,15 @@ public class BotClientTest {
                     .withStatus(200)
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
 
-        Void response = botClient.sendUpdates(updateRequest);
+        botClient.sendUpdates(updateRequest);
 
-        assertThat(response).isNull();
         wireMockServer.verify(postRequestedFor(urlEqualTo("/updates"))
             .withHeader(HttpHeaders.CONTENT_TYPE, matching(MediaType.APPLICATION_JSON_VALUE))
             .withRequestBody(equalToJson(objectMapper.writeValueAsString(updateRequest))));
     }
 
     @Test
-    public void testSendUpdatesWithRetry() throws IOException {
+    public void testSendUpdatesWithRetry() {
         wireMockServer
             .stubFor(post("/updates")
                 .inScenario("Retry Scenario")
@@ -103,9 +101,8 @@ public class BotClientTest {
                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
             );
 
-        Void response = botClient.sendUpdates(updateRequest);
+        botClient.sendUpdates(updateRequest);
 
-        assertThat(response).isNull();
         wireMockServer.verify(3, postRequestedFor(urlEqualTo("/updates")));
 
     }

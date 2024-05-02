@@ -1,5 +1,14 @@
 app:
   telegram-token: ${TELEGRAM_API_TOKEN}
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    consumer:
+      group-id: bot-messages
+      mappings: edu.java.scrapper.dto.bot.LinkUpdateRequest:edu.java.bot.dto.request.LinkUpdateRequest
+    topic-name: bot-updates
+    trusted-packages: "*"
+    dql-topic: bot-updates-dlq
 
 spring:
   application:
@@ -29,3 +38,32 @@ api:
       max-attempts: 3
       wait-duration: 2
       codes: INTERNAL_SERVER_ERROR, INSUFFICIENT_STORAGE, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+      path-mapping:
+        prometheus: /metrics
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: 1m
+  metrics:
+    tags:
+      application: ${spring.application.name}
